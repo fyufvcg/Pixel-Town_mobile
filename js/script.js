@@ -3,15 +3,6 @@
  * 包含页面切换、像素块过渡动画和导航功能
  */
 
-// ==================== 全局变量 ====================
-
-// 登录状态
-let currentUserId = null;
-let isLoggedIn = false;
-
-// API基础URL
-const API_BASE_URL = 'http://47.98.245.103:5000';
-
 // ==================== 消息提示功能 ====================
 
 /**
@@ -220,267 +211,8 @@ const Modal = {
             modalContent.style.opacity = '1';
             modalContent.style.transform = 'scale(1)';
         }, 10);
-    },
-
-    /**
-     * 显示成功提示
-     * @param {string} message - 提示消息
-     * @param {string} title - 提示标题
-     */
-    success: function (message, title = '成功') {
-        this.info(message, title);
-    },
-
-    /**
-     * 显示错误提示
-     * @param {string} message - 提示消息
-     * @param {string} title - 提示标题
-     */
-    error: function (message, title = '错误') {
-        this.info(message, title);
-    },
-
-    /**
-     * 显示警告提示
-     * @param {string} message - 提示消息
-     * @param {string} title - 提示标题
-     */
-    warning: function (message, title = '警告') {
-        this.info(message, title);
     }
 };
-
-// ==================== 登录功能 ====================
-
-/**
- * 检查登录状态
- */
-function checkLoginStatus() {
-    const savedUserId = localStorage.getItem('pixelTownUserId');
-    const savedUsername = localStorage.getItem('pixelTownUsername');
-
-    if (savedUserId) {
-        currentUserId = savedUserId;
-        isLoggedIn = true;
-        console.log('已登录用户:', savedUsername, 'ID:', currentUserId);
-        Modal.success('欢迎回来，' + savedUsername + '！', '登录成功');
-        // 加载用户进度数据
-        loadProgressFromDatabaseAndApply();
-        // 进入首页
-        goToMainPage();
-    } else {
-        isLoggedIn = false;
-        console.log('未登录状态');
-        showLoginDialog();
-    }
-}
-
-/**
- * 显示登录对话框
- */
-function showLoginDialog() {
-    const loginModal = document.createElement('div');
-    loginModal.className = 'pixel-modal';
-    loginModal.id = 'login-modal';
-
-    loginModal.innerHTML = `
-        <div class="modal-overlay"></div>
-        <div class="modal-content">
-            <div class="modal-header">
-                <div class="modal-title">账户登录</div>
-                <button class="modal-close" onclick="closeLoginDialog()">×</button>
-            </div>
-            <div class="modal-body">
-                <div class="auth-tabs">
-                    <button class="auth-tab active" onclick="switchAuthTab('login')" id="login-tab">登录</button>
-                    <button class="auth-tab" onclick="switchAuthTab('register')" id="register-tab">注册</button>
-                </div>
-                <div class="auth-form" id="login-form">
-                    <div class="form-group">
-                        <label>用户名</label>
-                        <input type="text" id="login-username" placeholder="请输入用户名">
-                    </div>
-                    <div class="form-group">
-                        <label>密码</label>
-                        <input type="password" id="login-password" placeholder="请输入密码">
-                    </div>
-                </div>
-                <div class="auth-form" id="register-form" style="display: none;">
-                    <div class="form-group">
-                        <label>用户名</label>
-                        <input type="text" id="register-username" placeholder="请输入用户名">
-                    </div>
-                    <div class="form-group">
-                        <label>密码</label>
-                        <input type="password" id="register-password" placeholder="请输入密码">
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="modal-button modal-cancel" onclick="closeLoginDialog()">取消</button>
-                <button class="modal-button" onclick="handleAuthSubmit()" id="auth-submit-btn">登录</button>
-            </div>
-        </div>
-    `;
-
-    document.body.appendChild(loginModal);
-
-    setTimeout(() => {
-        loginModal.classList.add('show');
-    }, 10);
-}
-
-/**
- * 关闭登录对话框
- */
-function closeLoginDialog() {
-    const loginModal = document.getElementById('login-modal');
-    if (loginModal) {
-        loginModal.classList.remove('show');
-        setTimeout(() => {
-            loginModal.remove();
-        }, 300);
-    }
-}
-
-/**
- * 切换认证标签
- */
-function switchAuthTab(tab) {
-    const loginForm = document.getElementById('login-form');
-    const registerForm = document.getElementById('register-form');
-    const loginTab = document.getElementById('login-tab');
-    const registerTab = document.getElementById('register-tab');
-    const submitBtn = document.getElementById('auth-submit-btn');
-
-    if (tab === 'login') {
-        loginForm.style.display = 'block';
-        registerForm.style.display = 'none';
-        loginTab.classList.add('active');
-        registerTab.classList.remove('active');
-        submitBtn.textContent = '登录';
-    } else {
-        loginForm.style.display = 'none';
-        registerForm.style.display = 'block';
-        loginTab.classList.remove('active');
-        registerTab.classList.add('active');
-        submitBtn.textContent = '注册';
-    }
-}
-
-/**
- * 处理认证提交
- */
-function handleAuthSubmit() {
-    const loginTab = document.getElementById('login-tab');
-    const isLogin = loginTab.classList.contains('active');
-
-    if (isLogin) {
-        const username = document.getElementById('login-username').value.trim();
-        const password = document.getElementById('login-password').value;
-
-        if (!username || !password) {
-            Modal.warning('请输入用户名和密码', '提示');
-            return;
-        }
-
-        loginUser(username, password);
-    } else {
-        const username = document.getElementById('register-username').value.trim();
-        const password = document.getElementById('register-password').value;
-
-        if (!username || !password) {
-            Modal.warning('请输入用户名和密码', '提示');
-            return;
-        }
-
-        registerUser(username, password);
-    }
-
-    closeLoginDialog();
-}
-
-/**
- * 用户登录
- */
-function loginUser(username, password) {
-    fetch(`${API_BASE_URL}/login`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ username, password })
-    })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                currentUserId = data.user_id;
-                isLoggedIn = true;
-                localStorage.setItem('pixelTownUserId', currentUserId);
-                localStorage.setItem('pixelTownUsername', username);
-                localStorage.removeItem('pixelTownNotePages');
-                console.log('登录成功，用户ID:', currentUserId);
-                Modal.success('登录成功！', '欢迎回来');
-                closeLoginDialog();
-                goToMainPage();
-                loadProgressFromDatabaseAndApply();
-                // 更新我的页面的个人信息
-                updateMinePageInfo();
-            } else {
-                Modal.error(data.message, '登录失败');
-            }
-        })
-        .catch(error => {
-            console.log('登录失败:', error);
-            Modal.error('网络连接失败，请检查网络设置', '登录失败');
-        });
-}
-
-/**
- * 用户注册
- */
-function registerUser(username, password) {
-    fetch(`${API_BASE_URL}/register`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ username, password })
-    })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                currentUserId = data.user_id;
-                isLoggedIn = true;
-                localStorage.setItem('pixelTownUserId', currentUserId);
-                localStorage.setItem('pixelTownUsername', username);
-                localStorage.removeItem('pixelTownNotePages');
-                console.log('注册成功，用户ID:', currentUserId);
-                Modal.success('注册成功！', '欢迎加入像素小镇');
-                closeLoginDialog();
-                goToMainPage();
-                setTimeout(() => {
-                    loadProgressFromDatabaseAndApply();
-                    // 更新我的页面的个人信息
-                    updateMinePageInfo();
-                }, 500);
-            } else {
-                Modal.error(data.message, '注册失败');
-            }
-        })
-        .catch(error => {
-            console.log('注册失败:', error);
-            Modal.error('网络连接失败，请检查网络设置', '注册失败');
-        });
-}
-
-/**
- * 加载用户进度数据
- */
-function loadProgressFromDatabaseAndApply() {
-    // 这里可以添加从服务器加载用户进度的逻辑
-    console.log('加载用户进度数据');
-}
 
 // ==================== 弹窗控制功能 ====================
 
@@ -2369,7 +2101,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (startBtn) {
         startBtn.addEventListener('click', function (e) {
             e.preventDefault();
-            checkLoginStatus();
+            goToMainPage();
         });
     }
 
@@ -2394,12 +2126,6 @@ document.addEventListener('DOMContentLoaded', function () {
             item.addEventListener('click', toggleAIWindow);
         }
     });
-
-    // 为我的页面的个人信息栏添加点击事件
-    const userInfoSection = document.querySelector('#minePage .user-info-section');
-    if (userInfoSection) {
-        userInfoSection.addEventListener('click', showEditProfileModal);
-    }
 });
 
 
