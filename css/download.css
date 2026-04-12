@@ -1,0 +1,424 @@
+/* 个人信息编辑弹窗 */
+.edit-profile-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.edit-profile-modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.edit-profile-content {
+    background: linear-gradient(180deg, #2c1810 0%, #3d2317 100%);
+    border: 3px solid rgba(255, 215, 0, 0.5);
+    border-radius: 16px;
+    padding: 20px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    position: relative;
+}
+
+.modal-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(255, 215, 0, 0.1);
+    border: 2px solid rgba(255, 215, 0, 0.3);
+    color: #ffd700;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.modal-close:hover {
+    background: rgba(255, 215, 0, 0.3);
+    border-color: #ffd700;
+    transform: scale(1.1);
+}
+
+.modal-header {
+    text-align: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+}
+
+.modal-header h2 {
+    color: #ffd700;
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0;
+    font-family: 'Zpix', 'Press Start 2P', monospace;
+}
+
+.account-avatar {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    font-weight: bold;
+    color: #2c1810;
+    margin: 0 auto 20px;
+    font-family: 'Zpix', 'Press Start 2P', monospace;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.account-avatar:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+}
+
+.account-avatar img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.account-details {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.account-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.account-item:last-child {
+    border-bottom: none;
+}
+
+.account-label {
+    color: #FFF;
+    font-size: 16px;
+    font-family: 'Zpix', 'Press Start 2P', monospace;
+}
+
+.account-value {
+    color: #FFF;
+    font-size: 16px;
+    font-family: 'Zpix', 'Press Start 2P', monospace;
+}
+
+.account-value.status-active {
+    color: #4CAF50;
+}
+
+.change-password-link {
+    color: #4CAF50;
+    text-decoration: none;
+    font-size: 14px;
+    margin-left: 10px;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.change-password-link:hover {
+    color: #45a049;
+    text-decoration: underline;
+}
+
+.logout-btn {
+    width: 100%;
+    padding: 12px;
+    background: rgba(244, 67, 54, 0.8);
+    color: #fff;
+    border: 2px solid rgba(244, 67, 54, 1);
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    font-family: 'Zpix', 'Press Start 2P', monospace;
+    transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+    background: rgba(244, 67, 54, 1);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(244, 67, 54, 0.4);
+}
+
+/* 头像选择器 */
+.avatar-selector-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.avatar-selector-overlay.show {
+    opacity: 1;
+}
+
+.avatar-selector-box {
+    background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    padding: 24px;
+    max-width: 420px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.avatar-selector-box h3 {
+    color: #fff;
+    text-align: center;
+    margin: 0 0 20px 0;
+    font-size: 18px;
+    font-family: 'Zpix', 'Press Start 2P', monospace;
+}
+
+.avatar-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.avatar-option {
+    width: 100%;
+    aspect-ratio: 1;
+    cursor: pointer;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.avatar-option:hover {
+    border-color: #ffd700;
+    transform: scale(1.05);
+}
+
+.avatar-option img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatar-upload-input {
+    display: none;
+}
+
+.avatar-upload-btn {
+    width: 100%;
+    padding: 10px;
+    background: rgba(76, 175, 80, 0.8);
+    color: #fff;
+    border: 2px solid rgba(76, 175, 80, 1);
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: 'Zpix', 'Press Start 2P', monospace;
+    transition: all 0.3s ease;
+    margin-bottom: 15px;
+}
+
+.avatar-upload-btn:hover {
+    background: rgba(76, 175, 80, 1);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+}
+
+.avatar-selector-close {
+    width: 100%;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: 'Zpix', 'Press Start 2P', monospace;
+    transition: all 0.3s ease;
+}
+
+.avatar-selector-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: #fff;
+}
+
+/* 修改密码弹窗 */
+.change-password-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.change-password-modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.change-password-content {
+    background: linear-gradient(180deg, #2c1810 0%, #3d2317 100%);
+    border: 3px solid rgba(255, 215, 0, 0.5);
+    border-radius: 16px;
+    padding: 20px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    position: relative;
+}
+
+.change-password-content h3 {
+    color: #ffd700;
+    text-align: center;
+    margin: 0 0 20px 0;
+    font-size: 18px;
+    font-family: 'Zpix', 'Press Start 2P', monospace;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    color: #FFD700;
+    font-size: 14px;
+    margin-bottom: 8px;
+    font-family: 'Zpix', 'Press Start 2P', monospace;
+}
+
+.form-input {
+    width: 100%;
+    padding: 10px 12px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 3px solid rgba(255, 215, 0, 0.5);
+    border-radius: 5px;
+    color: #FFF;
+    font-size: 14px;
+    font-family: 'Zpix', 'Press Start 2P', monospace;
+    box-sizing: border-box;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.form-input:focus {
+    border-color: #FFD700;
+    background: rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+}
+
+.form-input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(145deg, #4CAF50, #45a049);
+    border: 3px solid #FFD700;
+    border-radius: 5px;
+    color: #FFF;
+    font-size: 14px;
+    font-family: 'Zpix', 'Press Start 2P', monospace;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.submit-btn:hover {
+    background: linear-gradient(145deg, #45a049, #3d8b40);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .edit-profile-content {
+        width: 95%;
+        padding: 15px;
+    }
+
+    .modal-header h2 {
+        font-size: 18px;
+    }
+
+    .account-avatar {
+        width: 80px;
+        height: 80px;
+        font-size: 32px;
+    }
+
+    .account-label,
+    .account-value {
+        font-size: 14px;
+    }
+
+    .logout-btn {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    .avatar-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .change-password-content {
+        width: 95%;
+        padding: 15px;
+    }
+
+    .change-password-content h3 {
+        font-size: 16px;
+    }
+
+    .form-input {
+        font-size: 12px;
+        padding: 8px 10px;
+    }
+
+    .submit-btn {
+        font-size: 12px;
+        padding: 10px;
+    }
+}

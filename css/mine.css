@@ -1,0 +1,423 @@
+/* ==================== 我的页面样式 ==================== */
+
+/* 我的页面容器 */
+#minePage {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: #F5E6D3;
+  overflow: hidden;
+  padding-bottom: 80px;
+}
+
+/* 我的页面内容容器 */
+.mine-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding-top: 30px;
+  gap: 24px;
+}
+
+/* 盒子容器 */
+.mine-box {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin: 0 15px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* 第一栏：用户信息栏 */
+.user-info-section {
+  width: 100%;
+  height: 120px;
+  background: linear-gradient(145deg, #8B4513, #654321);
+  border: 2px solid #FFD700;
+  border-radius: 12px 12px 0 0;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  margin: 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.user-info-section:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 用户头像 */
+.user-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #FFD700, #FFC107);
+  border: 3px solid #8B4513;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 15px;
+  font-size: 32px;
+  font-weight: bold;
+  color: #8B4513;
+  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.5);
+  transition: all 0.3s ease;
+}
+
+.user-info-section:hover .user-avatar {
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
+}
+
+/* 用户信息 */
+.user-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.user-name {
+  font-size: 18px;
+  font-weight: bold;
+  color: #FFD700;
+  margin-bottom: 5px;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+}
+
+.user-id {
+  font-size: 14px;
+  color: rgba(255, 215, 0, 0.8);
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+}
+
+/* 第二栏：工作台 */
+.workbench-section {
+  width: 100%;
+  height: 60px;
+  background: linear-gradient(145deg, #8B4513, #654321);
+  border: 2px solid #FFD700;
+  border-top: none;
+  border-radius: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  margin: 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.workbench-section:hover {
+  background: linear-gradient(145deg, #9B5523, #755331);
+  transform: translateX(4px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 第三栏：薄弱点查看 */
+.weak-points-section {
+  width: 100%;
+  height: 60px;
+  background: linear-gradient(145deg, #8B4513, #654321);
+  border: 2px solid #FFD700;
+  border-top: none;
+  border-radius: 0 0 12px 12px;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  margin: 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.weak-points-section:hover {
+  background: linear-gradient(145deg, #9B5523, #755331);
+  transform: translateX(4px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 功能栏标签 */
+.section-label {
+  font-size: 16px;
+  font-weight: bold;
+  color: #FFD700;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+  transition: all 0.3s ease;
+}
+
+/* 第四栏：排行榜 */
+.leaderboard-section {
+  width: 100%;
+  height: 60px;
+  background: linear-gradient(145deg, #8B4513, #654321);
+  border: 2px solid #FFD700;
+  border-radius: 12px 12px 0 0;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  margin: 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.leaderboard-section:hover {
+  background: linear-gradient(145deg, #9B5523, #755331);
+  transform: translateX(4px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 第五栏：成就 */
+.achievements-section {
+  width: 100%;
+  height: 60px;
+  background: linear-gradient(145deg, #8B4513, #654321);
+  border: 2px solid #FFD700;
+  border-top: none;
+  border-radius: 0 0 12px 12px;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  margin: 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.achievements-section:hover {
+  background: linear-gradient(145deg, #9B5523, #755331);
+  transform: translateX(4px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 图标悬停效果 */
+.icon-section:hover .section-icon,
+.icon-section:hover .nav-icon {
+  transform: scale(1.1);
+  transition: all 0.3s ease;
+}
+
+/* 带图标的功能栏 */
+.icon-section {
+  display: flex;
+  align-items: center;
+}
+
+/* 功能图标 */
+.section-icon {
+  width: 32px;
+  height: 32px;
+  margin-right: 12px;
+  object-fit: contain;
+}
+
+/* 导航图标 */
+.nav-icon {
+  font-size: 24px;
+  margin-right: 12px;
+  display: inline-block;
+  width: 32px;
+  text-align: center;
+}
+
+/* 个人信息编辑弹窗 */
+.edit-profile-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 2000;
+  overflow: hidden;
+  opacity: 0;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.edit-profile-modal.active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+}
+
+.edit-profile-content {
+  position: relative;
+  width: 85%;
+  max-width: 320px;
+  background: linear-gradient(145deg, #8B4513, #654321);
+  border: 3px solid #FFD700;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5),
+    inset 0 2px 4px rgba(255, 255, 255, 0.1);
+  transform: scale(0.9);
+  opacity: 0;
+  transition: all 0.3s ease;
+  font-family: 'Zpix', sans-serif;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.edit-profile-modal.active .edit-profile-content {
+  transform: scale(1.1);
+  opacity: 1;
+}
+
+/* 编辑表单 */
+.edit-profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.form-label {
+  font-size: 14px;
+  color: #FFD700;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+}
+
+.form-value {
+  font-size: 14px;
+  color: #FFFFFF;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+}
+
+.change-btn {
+  background: transparent;
+  border: none;
+  color: #4CAF50;
+  font-size: 12px;
+  cursor: pointer;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+}
+
+.status-indicator {
+  color: #4CAF50;
+  font-size: 14px;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+}
+
+/* 退出登录按钮 */
+.logout-btn {
+  width: 100%;
+  height: 40px;
+  background: linear-gradient(145deg, #f44336, #d32f2f);
+  border: 2px solid #b71c1c;
+  border-radius: 4px;
+  color: #FFFFFF;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+  margin-top: 10px;
+}
+
+.logout-btn:hover {
+  background: linear-gradient(145deg, #d32f2f, #f44336);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* 响应式设计 */
+@media (max-width: 480px) {
+  .mine-content {
+    gap: 20px;
+    padding-top: 20px;
+  }
+
+  .mine-box {
+    margin: 0 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+
+  .user-info-section {
+    height: 90px;
+    padding: 0 15px;
+  }
+
+  .user-avatar {
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+    margin-right: 12px;
+  }
+
+  .user-name {
+    font-size: 16px;
+  }
+
+  .user-id {
+    font-size: 12px;
+  }
+
+  .workbench-section,
+  .weak-points-section,
+  .leaderboard-section,
+  .achievements-section {
+    height: 48px;
+    padding: 0 15px;
+  }
+
+  .section-label {
+    font-size: 14px;
+  }
+
+  .section-icon {
+    width: 26px;
+    height: 26px;
+    margin-right: 10px;
+  }
+
+  .nav-icon {
+    font-size: 20px;
+    margin-right: 10px;
+    width: 26px;
+  }
+
+  .edit-profile-content {
+    width: 90%;
+    padding: 15px;
+  }
+
+  .form-group {
+    padding: 6px 0;
+  }
+
+  .form-label,
+  .form-value {
+    font-size: 12px;
+  }
+
+  /* 移动设备上的悬停效果优化 */
+  .workbench-section:hover,
+  .weak-points-section:hover,
+  .leaderboard-section:hover,
+  .achievements-section:hover {
+    transform: translateX(2px);
+  }
+
+  .user-info-section:hover {
+    transform: translateY(-1px);
+  }
+
+  .user-info-section:hover .user-avatar {
+    transform: scale(1.03);
+  }
+}
