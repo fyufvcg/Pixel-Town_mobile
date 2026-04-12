@@ -185,9 +185,6 @@ function showScienceNPC() {
     if (npc) {
         npc.style.display = 'block';
 
-        // 创建遮罩层阻止科普页面交互
-        createSciencePageBlocker();
-
         // 重置对话状态
         scienceNPCDialogueState.index = 0;
         scienceNPCDialogueState.isComplete = false;
