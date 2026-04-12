@@ -317,7 +317,7 @@ function completeScienceNPCDialogue() {
  * 页面加载完成后初始化
  */
 document.addEventListener('DOMContentLoaded', function () {
-    // 初始化科普页面
+    initFluidRandomArticles();
     initSciencePage();
 });
 
@@ -379,4 +379,255 @@ function destroyScienceCarousel() {
         scienceSwiper.destroy(true, true);
         scienceSwiper = null;
     }
+}
+
+const categoryArticlesMap = {
+    '流体力学': typeof fluidMechanicsArticles !== 'undefined' ? fluidMechanicsArticles : [],
+    '体育运动': typeof sportsArticles !== 'undefined' ? sportsArticles : [],
+    '建筑结构': typeof architectureArticles !== 'undefined' ? architectureArticles : [],
+    '玩具游戏': typeof toyGameArticles !== 'undefined' ? toyGameArticles : [],
+    '交通工具': typeof vehicleArticles !== 'undefined' ? vehicleArticles : [],
+    '生活用品': typeof dailyUseArticles !== 'undefined' ? dailyUseArticles : [],
+    '生物自然': typeof bioNatureArticles !== 'undefined' ? bioNatureArticles : []
+    
+};
+
+let fluidRandomArticles = [];
+
+function initFluidRandomArticles() {
+    const fluidArticles = categoryArticlesMap['流体力学'] || [];
+    const shuffled = [...fluidArticles].sort(() => Math.random() - 0.5);
+    fluidRandomArticles = shuffled.slice(0, 5);
+}
+
+function getTagStats() {
+    try {
+        const stats = localStorage.getItem('tagErrorStats');
+        return stats ? JSON.parse(stats) : {};
+    } catch {
+        return {};
+    }
+}
+
+function calculateTagWeight(article) {
+    const tagStats = getTagStats();
+    if (!article.tags || !Array.isArray(article.tags)) return 0;
+    let weight = 0;
+    article.tags.forEach(tag => {
+        weight += (tagStats[tag] || 0);
+    });
+    return weight;
+}
+
+function getSmartArticles(category, limit = 5) {
+    const articles = categoryArticlesMap[category];
+    if (!articles || articles.length === 0) return [];
+    
+    if (category === '流体力学') {
+        return fluidRandomArticles.slice(0, limit);
+    }
+    
+    const articlesWithWeight = articles.map((article, index) => ({
+        article: article,
+        index: index,
+        weight: calculateTagWeight(article)
+    }));
+    
+    articlesWithWeight.sort((a, b) => b.weight - a.weight);
+    
+    return articlesWithWeight.slice(0, limit).map(item => ({
+        ...item.article,
+        originalIndex: item.index
+    }));
+}
+
+function showCategoryArticles(category) {
+    const smartArticles = getSmartArticles(category, 5);
+    if (!smartArticles || smartArticles.length === 0) {  // ← 修改这里
+        alert('暂无该分类的文章');
+        return;
+    }
+    
+    let articlesHTML = `<div class="articles-list">`;
+    smartArticles.forEach((article) => {               // ← 修改这里
+        const index = article.originalIndex;             // ← 添加这行
+        articlesHTML += `
+            <div class="article-item" onclick="showArticleDetail(${index}, '${category}')">
+                <div class="article-thumb">
+                    <img src="${article.image}" alt="${article.title}" onerror="this.src='images/科普/${category === '流体力学' ? 'fluid' : category === '体育运动' ? 'sport' : category === '建筑结构' ? 'building' : category === '玩具游戏' ? 'toy' : category === '交通工具' ? 'traffic' : category === '生活用品' ? 'household' : 'nature'}.jpg'">
+                </div>
+                <div class="article-info">
+                    <h3>${article.title}</h3>
+                    <p>${article.background.substring(0, 60)}...</p>
+                </div>
+            </div>
+        `;
+    });
+    articlesHTML += `</div>`;
+    
+    createArticleListModal(category, articlesHTML);
+}
+
+function showArticleDetail(articleIndex, category) {
+    const articles = categoryArticlesMap[category];
+    const article = articles[articleIndex];
+    if (!article) return;
+    
+    let articleHTML = `
+        <div class="article-detail">
+            <div class="article-image">
+                <img src="${article.image}" alt="${article.title}" onerror="this.src='images/科普/${category === '流体力学' ? 'fluid' : category === '体育运动' ? 'sport' : category === '建筑结构' ? 'building' : category === '玩具游戏' ? 'toy' : category === '交通工具' ? 'traffic' : category === '生活用品' ? 'household' : 'nature'}.jpg'">
+            </div>
+            <h2 class="article-title">${article.title}</h2>
+            <div class="article-tags">
+                ${article.tags ? article.tags.map(tag => `<span class="tag">${tag}</span>`).join('') : ''}
+            </div>
+            <div class="article-content">
+                <p>${article.background}</p>
+            </div>
+            <div class="article-question">
+                <h3>思考题</h3>
+                <p class="question-text">${article.question}</p>
+                <div class="question-options">
+                    ${article.options.map((option, idx) => `
+                        <label class="option-item">
+                            <input type="radio" name="article-question" value="${option.charAt(0)}">
+                            <span class="option-text">${option}</span>
+                        </label>
+                    `).join('')}
+                </div>
+                <button class="check-answer-btn" onclick="checkArticleAnswer('${category}', ${articleIndex})">查看答案</button>
+                <div class="answer-result" id="answer-result"></div>
+            </div>
+        </div>
+    `;
+    
+    createArticleDetailModal(article.title, articleHTML);
+}
+
+function checkArticleAnswer(category, articleIndex) {
+    const articles = categoryArticlesMap[category];
+    const article = articles[articleIndex];
+    if (!article) return;
+    
+    const selectedOption = document.querySelector('input[name="article-question"]:checked');
+    const resultDiv = document.getElementById('answer-result');
+    
+    if (!selectedOption) {
+        resultDiv.innerHTML = '<p class="error">请选择一个选项</p>';
+        return;
+    }
+    
+    const userAnswer = selectedOption.value;
+    const correctAnswer = article.correctAnswer;
+    
+    if (userAnswer === correctAnswer) {
+        resultDiv.innerHTML = '<p class="correct">✓ 回答正确！</p>';
+    } else {
+        resultDiv.innerHTML = `<p class="wrong">✗ 回答错误，正确答案是：${correctAnswer}</p>`;
+    }
+}
+
+function createArticleListModal(category, content) {
+    closeAllModals();
+    
+    const modalOverlay = document.createElement('div');
+    modalOverlay.className = 'modal-overlay article-list-modal';
+    modalOverlay.id = 'articleListModal';
+    
+    const modalContent = document.createElement('div');
+    modalContent.className = 'modal-content article-list-content';
+    
+    modalContent.innerHTML = `
+        <button class="modal-close" onclick="closeArticleListModal()">
+            <span>×</span>
+        </button>
+        <div class="modal-header">
+            <h2>${category}</h2>
+        </div>
+        <div class="modal-body">
+            ${content}
+        </div>
+    `;
+    
+    modalOverlay.appendChild(modalContent);
+    document.body.appendChild(modalOverlay);
+    
+    setTimeout(() => {
+        modalOverlay.classList.add('active');
+    }, 10);
+    
+    document.body.style.overflow = 'hidden';
+    
+    modalOverlay.addEventListener('click', function(e) {
+        if (e.target === modalOverlay) {
+            closeArticleListModal();
+        }
+    });
+}
+
+function createArticleDetailModal(title, content) {
+    closeAllModals();
+    
+    const modalOverlay = document.createElement('div');
+    modalOverlay.className = 'modal-overlay article-detail-modal';
+    modalOverlay.id = 'articleDetailModal';
+    
+    const modalContent = document.createElement('div');
+    modalContent.className = 'modal-content article-detail-content';
+    
+    modalContent.innerHTML = `
+        <button class="modal-close" onclick="closeArticleDetailModal()">
+            <span>×</span>
+        </button>
+        <div class="modal-header">
+            <h2>${title}</h2>
+        </div>
+        <div class="modal-body">
+            ${content}
+        </div>
+    `;
+    
+    modalOverlay.appendChild(modalContent);
+    document.body.appendChild(modalOverlay);
+    
+    setTimeout(() => {
+        modalOverlay.classList.add('active');
+    }, 10);
+    
+    document.body.style.overflow = 'hidden';
+    
+    modalOverlay.addEventListener('click', function(e) {
+        if (e.target === modalOverlay) {
+            closeArticleDetailModal();
+        }
+    });
+}
+
+function closeArticleListModal() {
+    const modal = document.getElementById('articleListModal');
+    if (modal) {
+        modal.classList.remove('active');
+        setTimeout(() => {
+            modal.remove();
+            document.body.style.overflow = '';
+        }, 300);
+    }
+}
+
+function closeArticleDetailModal() {
+    const modal = document.getElementById('articleDetailModal');
+    if (modal) {
+        modal.classList.remove('active');
+        setTimeout(() => {
+            modal.remove();
+            document.body.style.overflow = '';
+        }, 300);
+    }
+}
+
+function closeAllModals() {
+    closeArticleListModal();
+    closeArticleDetailModal();
+    closeScienceModal();
 }

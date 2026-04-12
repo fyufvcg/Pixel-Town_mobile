@@ -254,3 +254,236 @@ body {
     opacity: 0.8;
     transform: scale(0.95);
 }
+/* 文章列表弹窗样式 */
+.article-list-modal {
+    z-index: 1001;
+}
+
+.article-list-content {
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+    background: linear-gradient(145deg, #F5E6D3, #E8D5C4);
+    border-radius: 16px;
+    padding: 20px;
+}
+
+.article-list-content .modal-header h2 {
+    color: #8B4513;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.articles-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.article-item {
+    display: flex;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 12px;
+    padding: 12px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.article-item:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.article-thumb {
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.article-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.article-info {
+    margin-left: 12px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.article-info h3 {
+    color: #8B4513;
+    font-size: 16px;
+    margin: 0 0 8px 0;
+}
+
+.article-info p {
+    color: #666;
+    font-size: 12px;
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* 文章详情弹窗样式 */
+.article-detail-modal {
+    z-index: 1002;
+}
+
+.article-detail-content {
+    width: 90%;
+    max-width: 500px;
+    max-height: 85vh;
+    overflow-y: auto;
+    background: linear-gradient(145deg, #F5E6D3, #E8D5C4);
+    border-radius: 16px;
+    padding: 20px;
+}
+
+.article-detail-content .modal-header h2 {
+    color: #8B4513;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.article-image {
+    width: 100%;
+    height: 200px;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+
+.article-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.article-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.tag {
+    background: #D2B48C;
+    color: #8B4513;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+}
+
+.article-content {
+    background: rgba(255, 255, 255, 0.5);
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+.article-content p {
+    color: #333;
+    line-height: 1.8;
+    font-size: 14px;
+    text-align: justify;
+}
+
+.article-question {
+    background: rgba(255, 255, 255, 0.6);
+    padding: 15px;
+    border-radius: 12px;
+    border: 2px solid #D2B48C;
+}
+
+.article-question h3 {
+    color: #8B4513;
+    margin: 0 0 10px 0;
+    font-size: 16px;
+}
+
+.question-text {
+    color: #333;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+.question-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.option-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.option-item:hover {
+    background: rgba(210, 180, 140, 0.3);
+}
+
+.option-item input {
+    margin-right: 10px;
+}
+
+.option-text {
+    color: #333;
+    font-size: 13px;
+}
+
+.check-answer-btn {
+    background: #8B4513;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s;
+}
+
+.check-answer-btn:hover {
+    background: #A0522D;
+}
+
+.answer-result {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.answer-result .correct {
+    color: #228B22;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.answer-result .wrong {
+    color: #DC143C;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.answer-result .error {
+    color: #FF8C00;
+    font-size: 14px;
+}
+
+/* 禁止选中文字时的默认行为 */
+.article-item,
+.science-card {
+    -webkit-tap-highlight-color: transparent;
+}
