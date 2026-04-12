@@ -3,6 +3,281 @@
  * 包含页面切换、像素块过渡动画和导航功能
  */
 
+// ==================== 题目标签数据 ====================
+const questionTags = {
+    level1: {
+        choice1: ['胡克定律', '力学图像'],
+        choice2: ['重力', '重心'],
+        choice3: ['弹力', '胡克定律', '摩擦力'],
+        fill1: ['摩擦力', '公式'],
+        fill2: ['胡克定律', '公式'],
+        fill3: ['弹力', '力学计算']
+    },
+    level2: {
+        'choice1': ['静摩擦力', '方向判断'],
+        'choice2': ['摩擦力', '整体法隔离法'],
+        'choice3': ['摩擦力', '突变问题'],
+        'fill1': ['滑动摩擦力', '公式'],
+        'fill2': ['静摩擦力', '计算'],
+        'fill3': ['摩擦力', '做功']
+    },
+    level3: {
+        'choice1': ['平衡力', '相互作用力'],
+        'choice2': ['摩擦力', '牛顿第三定律'],
+        'choice3': ['牛顿第三定律', '基本概念'],
+        'fill1': ['作用力与反作用力', '特征'],
+        'fill2': ['平衡力', '超重失重'],
+        'fill3': ['牛顿第三定律', '应用']
+    },
+    level4: {
+        'choice1': ['力的合成', '几何计算'],
+        'choice2': ['力的分解', '实际效果'],
+        'choice3': ['平行四边形定则', '图解法'],
+        'fill1': ['力的合成', '计算'],
+        'fill2': ['力的分解', '正交分解'],
+        'fill3': ['平行四边形定则', '几何计算']
+    },
+    level5: {
+        'choice1': ['弹力', '受力分析'],
+        'choice2': ['力的平衡', '相互作用力'],
+        'choice3': ['重力', '弹力', '摩擦力'],
+        'choice4': ['力的概念', '受力分析'],
+        'choice5': ['胡克定律', '力的合成'],
+        'choice6': ['胡克定律', '力学计算'],
+        'choice7': ['摩擦力', '受力分析'],
+        'choice8': ['静摩擦力', '胡克定律', '受力分析'],
+        'choice9': ['弹力', '摩擦力', '牛顿第三定律'],
+        'choice10': ['摩擦力', '受力分析'],
+        'choice11': ['摩擦力', '受力分析', '力的平衡'],
+        'choice12': ['力的平衡', '摩擦力', '整体法'],
+        'fill1': ['力的合成', '实验操作'],
+        'fill2': ['力的合成', '等效替代法'],
+        'fill3': ['力的合成', '实验原理'],
+        'app1': ['胡克定律', '机械能守恒', '力学计算'],
+        'app2': ['胡克定律', '力学计算'],
+        'app3': ['静摩擦力', '滑动摩擦力', '力学计算'],
+        'app4': ['力的平衡', '摩擦力', '力学计算'],
+        'app5': ['胡克定律', '机械能守恒', '力学计算']
+    },
+    level6: {
+        'choice1': ['共点力'],
+        'choice2': ['平衡状态'],
+        'choice3': ['平衡力'],
+        'choice4': ['平衡状态'],
+        'choice5': ['平衡力', '整体法隔离法'],
+        'choice6': ['摩擦力', '平衡条件'],
+        'choice7': ['共点力平衡', '受力分析'],
+        'choice8': ['斜面问题', '摩擦力'],
+        'choice9': ['整体法', '共点力平衡'],
+        'choice10': ['共点力平衡', '受力分析'],
+        'fill1': ['静摩擦力', '受力分析', '斜面'],
+        'fill2': ['力的平衡', '正交分解', '几何计算'],
+        'fill3': ['力的平衡', '动态分析', '矢量三角形'],
+        'fill4': ['力的合成', '几何计算', '力的平衡'],
+        'fill5': ['斜面', '正交分解', '力的平衡'],
+        'fill6': ['整体法', '隔离法', '摩擦力'],
+        'app1': ['滑轮', '受力分析', '力的平衡', '正交分解'],
+        'app2': ['摩擦力', '力学计算', '正交分解']
+    }
+};
+
+// ==================== 标签错误统计功能 ====================
+function getTagStats() {
+    const stats = localStorage.getItem('tagErrorStats');
+    return stats ? JSON.parse(stats) : {};
+}
+
+function saveTagStats(stats) {
+    localStorage.setItem('tagErrorStats', JSON.stringify(stats));
+}
+
+function fetchTagStatsFromServer() {
+    return new Promise((resolve, reject) => {
+        const userId = localStorage.getItem('pixelTownUserId');
+        if (!userId) {
+            resolve(getTagStats());
+            return;
+        }
+        
+        fetch(`${API_BASE_URL}/get_user_tags?user_id=${userId}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success' && data.data) {
+                    const tagStats = {};
+                    data.data.forEach(item => {
+                        tagStats[item.tag_name] = item.wrong_count;
+                    });
+                    saveTagStats(tagStats);
+                    resolve(tagStats);
+                } else {
+                    resolve(getTagStats());
+                }
+            })
+            .catch(err => {
+                console.log('获取标签统计失败，使用本地数据:', err);
+                resolve(getTagStats());
+            });
+    });
+}
+
+function incrementTagErrors(tags) {
+    if (!tags || !Array.isArray(tags)) return;
+    
+    const stats = getTagStats();
+    tags.forEach(tag => {
+        stats[tag] = (stats[tag] || 0) + 1;
+    });
+    saveTagStats(stats);
+    
+    // 尝试同步到服务器
+    syncTagStatsToServer(stats);
+}
+
+function getWeakTags(limit = 5) {
+    const stats = getTagStats();
+    const sorted = Object.entries(stats)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, limit);
+    return sorted.map(([name, count]) => ({ name, count }));
+}
+
+function syncTagStatsToServer(stats) {
+    const userId = localStorage.getItem('pixelTownUserId');
+    if (!userId) return;
+    
+    Object.entries(stats).forEach(([tagName, wrongCount]) => {
+        fetch(`${API_BASE_URL}/add_tag_wrong`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                user_id: userId,
+                tag_name: tagName
+            })
+        }).catch(err => console.log('标签统计同步失败:', err));
+    });
+}
+
+function trackQuestionResult(level, questionType, questionNum, isCorrect) {
+    const key = `${questionType}${questionNum}`;
+    const tags = questionTags[level]?.[key];
+    
+    if (!isCorrect && tags) {
+        incrementTagErrors(tags);
+    }
+}
+
+function showWeaknessChartModal(tags) {
+    const existingModal = document.getElementById('weakness-chart-modal');
+    if (existingModal) existingModal.remove();
+    
+    const total = tags.reduce((sum, t) => sum + t.count, 0);
+    const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#C9CBCF'];
+    
+    const modal = document.createElement('div');
+    modal.id = 'weakness-chart-modal';
+    modal.className = 'weakness-chart-modal';
+    
+    const modalContent = document.createElement('div');
+    modalContent.className = 'weakness-chart-content';
+    modalContent.style.textAlign = 'center';
+    
+    const closeBtn = document.createElement('span');
+    closeBtn.className = 'weakness-chart-close';
+    closeBtn.innerHTML = '&times;';
+    closeBtn.addEventListener('click', () => modal.remove());
+    modalContent.appendChild(closeBtn);
+    
+    const modalTitle = document.createElement('div');
+    modalTitle.className = 'weakness-chart-title';
+    modalTitle.textContent = '薄弱知识点分布';
+    modalTitle.style.textAlign = 'center';
+    modalContent.appendChild(modalTitle);
+    
+    const chartContainer = document.createElement('div');
+    chartContainer.className = 'weakness-chart-small';
+    chartContainer.style.margin = '0 auto 20px';
+    chartContainer.style.display = 'flex';
+    chartContainer.style.justifyContent = 'center';
+    
+    const svgSize = 180;
+    const strokeWidth = 28;
+    const radius = (svgSize - strokeWidth) / 2;
+    
+    const svgWrapper = document.createElement('div');
+    svgWrapper.style.position = 'relative';
+    svgWrapper.style.width = svgSize + 'px';
+    svgWrapper.style.height = svgSize + 'px';
+    
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', `0 0 ${svgSize} ${svgSize}`);
+    svg.style.width = svgSize + 'px';
+    svg.style.height = svgSize + 'px';
+    svg.style.transform = 'rotate(-90deg)';
+    
+    let currentAngle = 0;
+    const paths = [];
+    
+    tags.forEach((tag, index) => {
+        const percent = tag.count / total;
+        const startAngle = currentAngle;
+        const endAngle = currentAngle + (percent * 360);
+        
+        const startRad = (startAngle - 90) * Math.PI / 180;
+        const endRad = (endAngle - 90) * Math.PI / 180;
+        
+        const x1 = svgSize / 2 + radius * Math.cos(startRad);
+        const y1 = svgSize / 2 + radius * Math.sin(startRad);
+        const x2 = svgSize / 2 + radius * Math.cos(endRad);
+        const y2 = svgSize / 2 + radius * Math.sin(endRad);
+        
+        const largeArcFlag = percent > 0.5 ? 1 : 0;
+        
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', `M ${x1} ${y1} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2}`);
+        path.setAttribute('fill', 'none');
+        path.setAttribute('stroke', colors[index % colors.length]);
+        path.setAttribute('stroke-width', strokeWidth);
+        path.setAttribute('stroke-linecap', 'round');
+        
+        paths.push(path);
+        svg.appendChild(path);
+        currentAngle = endAngle;
+    });
+    
+    const centerText = document.createElement('div');
+    centerText.className = 'chart-center-text';
+    centerText.style.position = 'absolute';
+    centerText.style.top = '50%';
+    centerText.style.left = '50%';
+    centerText.style.transform = 'translate(-50%, -50%)';
+    centerText.style.textAlign = 'center';
+    centerText.innerHTML = `<div style="color: #FFD700; font-size: 12px; margin-bottom: 4px;">总错题</div><div style="color: #FFD700; font-size: 28px; font-weight: bold;">${total}</div>`;
+    
+    svgWrapper.appendChild(svg);
+    svgWrapper.appendChild(centerText);
+    chartContainer.appendChild(svgWrapper);
+    modalContent.appendChild(chartContainer);
+    
+    const legendContainer = document.createElement('div');
+    legendContainer.className = 'weakness-legend';
+    
+    tags.forEach((tag, index) => {
+        const percentage = ((tag.count / total) * 100).toFixed(1);
+        const legendItem = document.createElement('div');
+        legendItem.className = 'weakness-legend-item';
+        legendItem.innerHTML = `<span class="legend-color" style="background:${colors[index % colors.length]}"></span><span class="legend-name">${tag.name}</span><span class="legend-count">${tag.count}题 (${percentage}%)</span>`;
+        legendContainer.appendChild(legendItem);
+    });
+    
+    modalContent.appendChild(legendContainer);
+    modal.appendChild(modalContent);
+    document.body.appendChild(modal);
+    
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.remove();
+    });
+}
+
 // ==================== 消息提示功能 ====================
 
 /**
@@ -2694,12 +2969,36 @@ function submitLevel2Practice() {
 
     // 计算得分（简化版）
     let score = 0;
-    if (q1Answer.value === 'c') score += 10;
-    if (q2Answer.value === 'b') score += 10;
-    if (q3Answer.value === 'c') score += 10;
-    if (fillQ1.includes('0 ≤ F ≤ Fmax') || fillQ1.includes('相对运动趋势')) score += 10;
-    if (fillQ2.includes('接触面材料') || fillQ2.includes('粗糙程度')) score += 10;
-    if (fillQ3 === '20') score += 10;
+    if (q1Answer.value === 'c') {
+        score += 10;
+    } else {
+        trackQuestionResult('level2', 'choice', 1, false);
+    }
+    if (q2Answer.value === 'b') {
+        score += 10;
+    } else {
+        trackQuestionResult('level2', 'choice', 2, false);
+    }
+    if (q3Answer.value === 'c') {
+        score += 10;
+    } else {
+        trackQuestionResult('level2', 'choice', 3, false);
+    }
+    if (fillQ1.includes('0 ≤ F ≤ Fmax') || fillQ1.includes('相对运动趋势')) {
+        score += 10;
+    } else {
+        trackQuestionResult('level2', 'fill', 1, false);
+    }
+    if (fillQ2.includes('接触面材料') || fillQ2.includes('粗糙程度')) {
+        score += 10;
+    } else {
+        trackQuestionResult('level2', 'fill', 2, false);
+    }
+    if (fillQ3 === '20') {
+        score += 10;
+    } else {
+        trackQuestionResult('level2', 'fill', 3, false);
+    }
 
     // 显示结果
     const resultModal = document.createElement('div');
@@ -2852,6 +3151,8 @@ function showLevel6PracticeResults(answers) {
         if (isCorrect) {
             correctCount++;
             score += choiceScore;
+        } else {
+            trackQuestionResult('level6', 'choice', i, false);
         }
 
         resultHTML += `
@@ -2872,6 +3173,8 @@ function showLevel6PracticeResults(answers) {
         if (isCorrect) {
             correctCount++;
             score += fillScore;
+        } else {
+            trackQuestionResult('level6', 'fill', i, false);
         }
 
         resultHTML += `

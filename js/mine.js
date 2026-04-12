@@ -29,8 +29,25 @@ function initMinePage() {
     // 初始化薄弱点查看点击事件
     const weakPointsSection = document.querySelector('.weak-points-section');
     if (weakPointsSection) {
-        weakPointsSection.addEventListener('click', function () {
-            alert('薄弱点查看功能开发中');
+        weakPointsSection.addEventListener('click', async function () {
+            const userId = localStorage.getItem('pixelTownUserId');
+            if (!userId) {
+                alert('请先登录后再查看薄弱点');
+                return;
+            }
+            
+            const response = await fetch(`${API_BASE_URL}/get_user_tags?user_id=${userId}`);
+            const data = await response.json();
+            
+            if (data.status === 'success' && data.data && data.data.length > 0) {
+                const tags = data.data.map(item => ({
+                    name: item.tag_name,
+                    count: item.wrong_count
+                }));
+                showWeaknessChartModal(tags);
+            } else {
+                alert('暂无错题记录，快去答题吧！');
+            }
         });
     }
 

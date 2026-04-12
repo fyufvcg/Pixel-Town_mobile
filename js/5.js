@@ -212,6 +212,7 @@ function submitLevel4Test() {
     const userAnswer1 = q1Answer ? q1Answer.value : '';
     const isCorrect1 = userAnswer1 === 'c';
     if (isCorrect1) correctCount++;
+    else trackQuestionResult('level4', 'choice', 1, false);
     resultHTML += `
         <div class="test-result-item ${isCorrect1 ? 'correct' : 'incorrect'}">
             <p><strong>问题1：</strong>${isCorrect1 ? '✅ 正确' : '❌ 错误'}</p>
@@ -225,6 +226,7 @@ function submitLevel4Test() {
     const userAnswer2 = q2Answer ? q2Answer.value : '';
     const isCorrect2 = userAnswer2 === 'a' || userAnswer2 === 'c' || userAnswer2 === 'd';
     if (isCorrect2) correctCount++;
+    else trackQuestionResult('level4', 'choice', 2, false);
     resultHTML += `
         <div class="test-result-item ${isCorrect2 ? 'correct' : 'incorrect'}">
             <p><strong>问题2：</strong>${isCorrect2 ? '✅ 正确' : '❌ 错误'}</p>
@@ -238,6 +240,7 @@ function submitLevel4Test() {
     const userAnswer3 = q3Answer ? q3Answer.value : '';
     const isCorrect3 = userAnswer3 === '5；1' || userAnswer3 === '5,1' || userAnswer3 === '5； 1' || userAnswer3 === '5, 1';
     if (isCorrect3) correctCount++;
+    else trackQuestionResult('level4', 'choice', 3, false);
     resultHTML += `
         <div class="test-result-item ${isCorrect3 ? 'correct' : 'incorrect'}">
             <p><strong>问题3：</strong>${isCorrect3 ? '✅ 正确' : '❌ 错误'}</p>
@@ -251,6 +254,7 @@ function submitLevel4Test() {
     const userAnswer4 = q4Answer ? q4Answer.value : '';
     const isCorrect4 = userAnswer4.includes('平行四边形') && userAnswer4.includes('|F₁-F₂|') && userAnswer4.includes('F₁+F₂');
     if (isCorrect4) correctCount++;
+    else trackQuestionResult('level4', 'choice', 4, false);
     resultHTML += `
         <div class="test-result-item ${isCorrect4 ? 'correct' : 'incorrect'}">
             <p><strong>问题4：</strong>${isCorrect4 ? '✅ 正确' : '❌ 错误'}</p>
@@ -264,6 +268,7 @@ function submitLevel4Test() {
     const userAnswer5 = q5Answer ? q5Answer.value : '';
     const isCorrect5 = userAnswer5 === 'b' || userAnswer5 === 'c' || userAnswer5 === 'd';
     if (isCorrect5) correctCount++;
+    else trackQuestionResult('level4', 'choice', 5, false);
     resultHTML += `
         <div class="test-result-item ${isCorrect5 ? 'correct' : 'incorrect'}">
             <p><strong>问题5：</strong>${isCorrect5 ? '✅ 正确' : '❌ 错误'}</p>
@@ -540,6 +545,8 @@ async function showLevel4PracticeResults(answers) {
     if (isCorrect4) {
         correctCount++;
         choiceFillScore += CHOICE_FILL_SCORE;
+    } else {
+        trackQuestionResult('level4', 'fill', 1, false);
     }
     resultHTML += `
         <div class="test-result-item ${isCorrect4 ? 'correct' : 'incorrect'}">
@@ -555,6 +562,8 @@ async function showLevel4PracticeResults(answers) {
     if (isCorrect5) {
         correctCount++;
         choiceFillScore += CHOICE_FILL_SCORE;
+    } else {
+        trackQuestionResult('level4', 'fill', 2, false);
     }
     resultHTML += `
         <div class="test-result-item ${isCorrect5 ? 'correct' : 'incorrect'}">
@@ -570,6 +579,8 @@ async function showLevel4PracticeResults(answers) {
     if (isCorrect6) {
         correctCount++;
         choiceFillScore += CHOICE_FILL_SCORE;
+    } else {
+        trackQuestionResult('level4', 'fill', 3, false);
     }
     resultHTML += `
         <div class="test-result-item ${isCorrect6 ? 'correct' : 'incorrect'}">

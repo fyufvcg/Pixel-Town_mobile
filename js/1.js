@@ -309,6 +309,8 @@ function showPracticeResults(answers) {
     if (isCorrect) {
       correctCount++;
       score += choiceScore;
+    } else {
+      trackQuestionResult('level1', 'choice', i, false);
     }
 
     resultHTML += `
@@ -317,7 +319,7 @@ function showPracticeResults(answers) {
                 <p><strong>你的答案：</strong>${userAnswer || '未作答'}</p>
                 <p><strong>正确答案：</strong>${correctAnswer.toUpperCase()}</p>
             </div>
-        `;
+    `;
   }
 
   // 填空题结果
@@ -329,6 +331,8 @@ function showPracticeResults(answers) {
     if (isCorrect) {
       correctCount++;
       score += fillScore;
+    } else {
+      trackQuestionResult('level1', 'fill', i, false);
     }
 
     resultHTML += `

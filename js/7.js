@@ -739,6 +739,8 @@ function showChapterTestResults(choiceAnswers, fillAnswers, appAnswers, correctA
     if (isCorrect) {
       correctChoiceCount++;
       choiceScore += CHOICE_SCORE;
+    } else {
+      trackQuestionResult('level5', 'choice', i, false);
     }
     resultHTML += `
       <div class="test-result-item ${isCorrect ? 'correct' : 'incorrect'}">
@@ -759,14 +761,9 @@ function showChapterTestResults(choiceAnswers, fillAnswers, appAnswers, correctA
     if (isCorrect) {
       correctFillCount++;
       fillScore += FILL_SCORE;
+    } else {
+      trackQuestionResult('level5', 'fill', 1, false);
     }
-    resultHTML += `
-      <div class="test-result-item ${isCorrect ? 'correct' : 'incorrect'}">
-        <p><strong>填空题1-${i + 1}：</strong>${isCorrect ? '✅ 正确' : '❌ 错误'}</p>
-        <p><strong>你的答案：</strong>${userAnswer || '未作答'}</p>
-        <p><strong>正确答案：</strong>${correctFill1[i]}</p>
-      </div>
-    `;
   }
 
   // 填空题2
@@ -778,14 +775,9 @@ function showChapterTestResults(choiceAnswers, fillAnswers, appAnswers, correctA
     if (isCorrect) {
       correctFillCount++;
       fillScore += FILL_SCORE;
+    } else {
+      trackQuestionResult('level5', 'fill', 2, false);
     }
-    resultHTML += `
-      <div class="test-result-item ${isCorrect ? 'correct' : 'incorrect'}">
-        <p><strong>填空题2-${i + 1}：</strong>${isCorrect ? '✅ 正确' : '❌ 错误'}</p>
-        <p><strong>你的答案：</strong>${userAnswer || '未作答'}</p>
-        <p><strong>正确答案：</strong>${correctFill2[i]}</p>
-      </div>
-    `;
   }
 
   // 填空题3

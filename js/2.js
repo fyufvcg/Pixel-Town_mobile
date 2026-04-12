@@ -221,6 +221,8 @@ function submitLevel2Practice() {
         if (isCorrect) {
             correctCount++;
             choiceFillScore += CHOICE_FILL_SCORE;
+        } else {
+            trackQuestionResult('level2', 'choice', i, false);
         }
 
         resultHTML += `
@@ -243,6 +245,8 @@ function submitLevel2Practice() {
         if (isCorrect) {
             correctCount++;
             choiceFillScore += CHOICE_FILL_SCORE;
+        } else {
+            trackQuestionResult('level2', 'fill', i, false);
         }
 
         resultHTML += `
