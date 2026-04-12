@@ -640,24 +640,179 @@ function pixelBlockTransition(fromUrl, toUrl, onMidpoint, onComplete) {
 
 // ==================== 页面切换功能 ====================
 
+// API_BASE_URL 在 download.js 中定义
+
+function checkLoginStatus() {
+    console.log('checkLoginStatus 被调用');
+    const userId = localStorage.getItem('pixelTownUserId');
+    console.log('用户ID:', userId);
+    const authButtons = document.getElementById('authButtons');
+    const loadingHint = document.getElementById('loadingHint');
+    
+    if (userId) {
+        console.log('已登录，准备跳转');
+        if (authButtons) authButtons.style.display = 'none';
+        if (loadingHint) loadingHint.style.display = 'block';
+        setTimeout(function() {
+            console.log('执行跳转');
+            goToMainPage();
+        }, 1000);
+    } else {
+        console.log('未登录，显示登录按钮');
+        if (authButtons) authButtons.style.display = 'flex';
+        if (loadingHint) loadingHint.style.display = 'none';
+    }
+}
+
+function showLoginModal() {
+    document.getElementById('loginModal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeLoginModal() {
+    document.getElementById('loginModal').style.display = 'none';
+    document.getElementById('loginUsername').value = '';
+    document.getElementById('loginPassword').value = '';
+    document.body.style.overflow = '';
+}
+
+function showRegisterModal() {
+    document.getElementById('registerModal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeRegisterModal() {
+    document.getElementById('registerModal').style.display = 'none';
+    document.getElementById('registerUsername').value = '';
+    document.getElementById('registerPassword').value = '';
+    document.getElementById('registerConfirmPassword').value = '';
+    document.body.style.overflow = '';
+}
+
+function switchToRegister() {
+    closeLoginModal();
+    showRegisterModal();
+}
+
+function switchToLogin() {
+    closeRegisterModal();
+    showLoginModal();
+}
+
+function handleLogin(event) {
+    event.preventDefault();
+    console.log('handleLogin 被调用');
+    console.log('API_BASE_URL:', API_BASE_URL);
+    const username = document.getElementById('loginUsername').value;
+    const password = document.getElementById('loginPassword').value;
+    console.log('用户名:', username);
+    
+    fetch(`${API_BASE_URL}/login`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            username: username,
+            password: password
+        })
+    })
+    .then(res => {
+        console.log('响应状态:', res.status);
+        return res.json();
+    })
+    .then(data => {
+        console.log('响应数据:', data);
+        // 兼容处理：检查 success 或 message 中是否包含"成功"
+        const loginSuccess = data.success || (data.message && data.message.includes('成功'));
+        console.log('loginSuccess:', loginSuccess);
+        if (loginSuccess) {
+            console.log('登录成功，准备跳转');
+            localStorage.setItem('pixelTownUsername', data.username || document.getElementById('loginUsername').value);
+            localStorage.setItem('pixelTownUserId', data.user_id || Date.now().toString());
+            console.log('关闭登录弹窗');
+            closeLoginModal();
+            console.log('调用 goToMainPageNoAnimation');
+            goToMainPageNoAnimation();
+        } else {
+            console.log('登录失败:', data.message);
+            alert(data.message || '登录失败');
+        }
+    })
+    .catch(err => {
+        console.error('登录错误:', err);
+        alert('登录失败，请稍后重试');
+    });
+}
+
+function handleRegister(event) {
+    event.preventDefault();
+    const username = document.getElementById('registerUsername').value;
+    const password = document.getElementById('registerPassword').value;
+    const confirmPassword = document.getElementById('registerConfirmPassword').value;
+    
+    if (password !== confirmPassword) {
+        alert('两次输入的密码不一致');
+        return;
+    }
+    
+    fetch(`${API_BASE_URL}/register`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            username: username,
+            password: password
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            localStorage.setItem('pixelTownUsername', data.username);
+            localStorage.setItem('pixelTownUserId', data.user_id);
+            closeRegisterModal();
+            goToMainPage();
+        } else {
+            alert(data.message || '注册失败');
+        }
+    })
+    .catch(err => {
+        console.error('注册错误:', err);
+        alert('注册失败，请稍后重试');
+    });
+}
+
 /**
- * 切换到主页面
+ * 切换到主页面（无动画版本，用于登录成功后）
+ */
+function goToMainPageNoAnimation() {
+    console.log('goToMainPageNoAnimation 直接跳转');
+    document.getElementById('startPage').style.display = 'none';
+    document.getElementById('mainPage').style.display = 'block';
+    document.getElementById('homePage').style.display = 'block';
+    document.getElementById('topFunctionArea').style.display = 'flex';
+    document.getElementById('bottomRightBox').style.display = 'flex';
+    showModal();
+}
+
+/**
+ * 切换到主页面（带动画版本，用于已有登录信息时）
  */
 function goToMainPage() {
+    console.log('goToMainPage 开始执行（带动画）');
     pixelBlockTransition(
         'images/5bccba06f31f48445a2fc3563bc4c39c.jpeg',
         'images/main background.jpg',
         function () {
             document.getElementById('startPage').style.display = 'none';
             document.getElementById('mainPage').style.display = 'block';
-            // 确保首页背景和内容正确显示
             document.getElementById('homePage').style.display = 'block';
             document.getElementById('topFunctionArea').style.display = 'flex';
             document.getElementById('bottomRightBox').style.display = 'flex';
         },
         function () {
             console.log('Transition completed');
-            // 页面切换完成后显示欢迎弹窗
             showModal();
         }
     );
@@ -2096,14 +2251,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // 初始化弹窗事件
     initModalEvents();
 
-    // 开始按钮点击事件
-    const startBtn = document.getElementById('startBtn');
-    if (startBtn) {
-        startBtn.addEventListener('click', function (e) {
-            e.preventDefault();
-            goToMainPage();
-        });
-    }
+    // 检查登录状态并显示相应内容
+    checkLoginStatus();
 
     // 初始化顶部功能区点击事件
     const functionItems = document.querySelectorAll('.function-item');

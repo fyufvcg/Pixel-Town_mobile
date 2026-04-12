@@ -81,19 +81,61 @@
             </div>
             <p>在这里，每一次点击都是一次对物理的探索</p>
 
-            <!-- 开始按钮 -->
-            <div class="start-button">
-                <img src="images/67981C0A27A721D5BAE7B0F3ADEC0206.jpg" alt="开始学习" id="startBtn">
+            <!-- 登录/注册按钮容器 -->
+            <div class="auth-buttons" id="authButtons" style="display: none;">
+                <button class="auth-btn register-btn" onclick="showRegisterModal()">注册</button>
+                <button class="auth-btn login-btn" onclick="showLoginModal()">登录</button>
             </div>
 
-            <!-- 提示文字 -->
-            <div class="hint-text">点击上方按钮，开始你的像素冒险之旅</div>
+            <!-- 加载提示 -->
+            <div class="loading-hint" id="loadingHint" style="display: none;">
+                <p>正在进入像素小镇...</p>
+            </div>
         </div>
 
         <!-- 底部半透明盒子 -->
         <div class="bottom-box" style="display: flex; align-items: center; justify-content: center;">
             <p>
                 &copy; 2026 像素小镇. 保留所有权利. | 享受快乐的像素世界</p>
+        </div>
+    </div>
+
+    <!-- 登录弹窗 -->
+    <div class="auth-modal" id="loginModal" style="display: none;">
+        <div class="auth-modal-content">
+            <button class="auth-modal-close" onclick="closeLoginModal()">×</button>
+            <h2>登录</h2>
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="auth-form-group">
+                    <input type="text" id="loginUsername" placeholder="用户名" required>
+                </div>
+                <div class="auth-form-group">
+                    <input type="password" id="loginPassword" placeholder="密码" required>
+                </div>
+                <button type="submit" class="auth-submit-btn">登录</button>
+            </form>
+            <p class="auth-switch-text">还没有账号？<a href="javascript:void(0)" onclick="switchToRegister()">立即注册</a></p>
+        </div>
+    </div>
+
+    <!-- 注册弹窗 -->
+    <div class="auth-modal" id="registerModal" style="display: none;">
+        <div class="auth-modal-content">
+            <button class="auth-modal-close" onclick="closeRegisterModal()">×</button>
+            <h2>注册</h2>
+            <form id="registerForm" onsubmit="handleRegister(event)">
+                <div class="auth-form-group">
+                    <input type="text" id="registerUsername" placeholder="用户名" required>
+                </div>
+                <div class="auth-form-group">
+                    <input type="password" id="registerPassword" placeholder="密码" required>
+                </div>
+                <div class="auth-form-group">
+                    <input type="password" id="registerConfirmPassword" placeholder="确认密码" required>
+                </div>
+                <button type="submit" class="auth-submit-btn">注册</button>
+            </form>
+            <p class="auth-switch-text">已有账号？<a href="javascript:void(0)" onclick="switchToLogin()">立即登录</a></p>
         </div>
     </div>
 
@@ -3925,6 +3967,7 @@
     <script src="js/AI.js"></script>
     <script src="js/work.js"></script>
     <script src="js/download.js"></script>
+    <script src="js/script.js"></script>
     <script src="js/teahouse.js"></script>
     <script src="js/mine.js"></script>
 </body>
