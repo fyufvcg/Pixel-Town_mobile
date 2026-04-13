@@ -302,9 +302,9 @@ function completeScienceNPCDialogue() {
         }, 300);
     }
 
-    // 隐藏NPC
+    // NPC保持显示（常驻）
     if (npc) {
-        npc.style.display = 'none';
+        npc.style.display = 'block';
     }
 
     // 隐藏遮罩层，允许科普页面交互
