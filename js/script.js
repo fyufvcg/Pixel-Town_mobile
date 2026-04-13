@@ -1895,15 +1895,13 @@ function showNoteWindow() {
             <button class="note-toolbar-btn" onclick="clearFormat()" title="清除格式">清除</button>
         </div>
         <div class="note-page-nav" id="note-page-nav">
-            <div class="page-nav-left">
-                <button class="note-page-btn" onclick="createNewPage()" title="新建页面">+ 新建</button>
-                <button class="note-page-btn" onclick="deleteCurrentPage()" title="删除当前页面">删除</button>
+            <div class="page-tabs-container" id="page-tabs">
             </div>
-            <div class="page-nav-center" id="page-tabs">
-            </div>
-            <div class="page-nav-right">
+            <div class="page-actions">
                 <button class="note-page-btn" onclick="prevPage()" title="上一页">◀</button>
                 <button class="note-page-btn" onclick="nextPage()" title="下一页">▶</button>
+                <button class="note-page-btn" onclick="createNewPage()" title="新建页面">新建</button>
+                <button class="note-page-btn delete-btn" onclick="deleteCurrentPage()" title="删除当前页面">删除</button>
             </div>
         </div>
         <div class="note-content">
@@ -2180,8 +2178,67 @@ function createSaveSuccessModal() {
     document.body.appendChild(modal);
 }
 
+// 同步笔记到服务器
+function syncNoteToServer(page) {
+    const userId = localStorage.getItem('pixelTownUserId');
+    if (!userId) return;
+
+    const noteData = {
+        user_id: userId,
+        note_title: page.title || '无标题笔记',
+        note_content: page.content || ''
+    };
+
+    if (page.serverId) {
+        noteData.note_id = page.serverId;
+        fetch(`${API_BASE_URL}/update_note`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(noteData)
+        }).catch(err => console.log('同步笔记失败:', err));
+    } else {
+        fetch(`${API_BASE_URL}/add_note`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(noteData)
+        }).then(res => res.json())
+        .then(data => {
+            if (data.status === 'success') {
+                page.serverId = data.note_id;
+                localStorage.setItem('pixelTownNotePages', JSON.stringify(notePages));
+        
+        notePages.forEach(p => syncNoteToServer(p));
+            }
+        })
+        .catch(err => console.log('同步笔记失败:', err));
+    }
+}
+
+// 从服务器加载笔记
+function loadNotesFromServer() {
+    const userId = localStorage.getItem('pixelTownUserId');
+    if (!userId) return Promise.resolve([]);
+
+    return fetch(`${API_BASE_URL}/get_notes?user_id=${userId}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === 'success' && data.data) {
+                return data.data;
+            }
+            return [];
+        })
+        .catch(err => {
+            console.log('加载笔记失败:', err);
+            return [];
+        });
+}
+
 // 显示保存成功弹窗
 function showSaveSuccessModal() {
+// 同步笔记到服务器
+
+
+// 从服务器加载笔记
     createSaveSuccessModal();
     const modal = document.querySelector('.save-success-modal');
     modal.classList.add('show');
@@ -2211,6 +2268,10 @@ function saveNoteContent() {
     // 保存到 localStorage
     try {
         localStorage.setItem('pixelTownNotePages', JSON.stringify(notePages));
+        
+        // 同步到服务器
+        syncNoteToServer(page);
+        
         showSaveSuccessModal();
     } catch (e) {
         console.log('保存笔记失败:', e);
@@ -2218,27 +2279,68 @@ function saveNoteContent() {
     }
 }
 
+
 // 初始化笔记分页
 function initializeNotePages() {
-    // 从 localStorage 加载
-    try {
-        const savedPages = localStorage.getItem('pixelTownNotePages');
-        if (savedPages) {
-            notePages = JSON.parse(savedPages);
+    // 从服务器加载笔记
+    loadNotesFromServer().then(serverNotes => {
+        // 合并服务器笔记和本地笔记
+        if (serverNotes && serverNotes.length > 0) {
+            serverNotes.forEach((note, index) => {
+                // 检查本地是否已有该笔记
+                const existingPage = notePages.find(p => p.serverId === note.note_id);
+                if (!existingPage) {
+                    notePages.push({
+                        id: `server_${note.note_id}`,
+                        serverId: note.note_id,
+                        title: note.note_title,
+                        content: note.note_content,
+                        createdAt: note.created_at,
+                        updatedAt: note.updated_at
+                    });
+                }
+            });
+            // 保存合并后的笔记
+            localStorage.setItem('pixelTownNotePages', JSON.stringify(notePages));
         }
-    } catch (e) {
-        console.log('加载笔记页面失败:', e);
-        notePages = [];
-    }
+        
+        // 按标题中的数字排序（第1页、第2页...）
+        notePages.sort((a, b) => {
+            const numA = parseInt(a.title.replace(/\D/g, '')) || 0;
+            const numB = parseInt(b.title.replace(/\D/g, '')) || 0;
+            return numA - numB;
+        });
+        
+        // 确保至少有一页
+        if (notePages.length === 0) {
+            createNewPage('第1页');
+        } else {
+            currentPageId = notePages[0].id;
+            loadPage(currentPageId);
+        }
+        
+        updatePageTabs();
+    }).catch(() => {
+        // 如果加载失败，使用本地笔记
+        try {
+            const savedPages = localStorage.getItem('pixelTownNotePages');
+            if (savedPages) {
+                notePages = JSON.parse(savedPages);
+            }
+        } catch (e) {
+            console.log('加载笔记页面失败:', e);
+            notePages = [];
+        }
 
-    if (notePages.length === 0) {
-        createNewPage('第1页');
-    } else {
-        currentPageId = notePages[0].id;
-        loadPage(currentPageId);
-    }
+        if (notePages.length === 0) {
+            createNewPage('第1页');
+        } else {
+            currentPageId = notePages[0].id;
+            loadPage(currentPageId);
+        }
 
-    updatePageTabs();
+        updatePageTabs();
+    });
 }
 
 // 创建新页面
@@ -2352,6 +2454,17 @@ function confirmDeletePage() {
     }
 
     const index = notePages.findIndex(p => p.id === currentPageId);
+    const deletedPage = notePages[index];
+    
+    // 删除服务器上的笔记
+    if (deletedPage && deletedPage.serverId) {
+        fetch(`${API_BASE_URL}/delete_note`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ note_id: deletedPage.serverId })
+        }).catch(err => console.log('删除笔记失败:', err));
+    }
+    
     notePages.splice(index, 1);
 
     currentPageId = notePages[Math.max(0, index - 1)].id;
@@ -2439,6 +2552,11 @@ function saveAllPages() {
 
     try {
         localStorage.setItem('pixelTownNotePages', JSON.stringify(notePages));
+        
+        // 同步到服务器
+        notePages.forEach(page => {
+            syncNoteToServer(page);
+        });
     } catch (e) {
         console.log('保存页面失败:', e);
     }
