@@ -1,0 +1,204 @@
+/* 学习工作台页面样式 */
+
+.workbench-page {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, #2c1810 0%, #3d2317 100%);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+}
+
+.workbench-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.3);
+  border-bottom: 2px solid rgba(255, 215, 0, 0.5);
+  position: relative;
+}
+
+.workbench-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #FFD700, transparent);
+}
+
+.workbench-title {
+  color: #FFD700;
+  font-size: 24px;
+  font-weight: bold;
+  text-shadow: 2px 2px 0 #000;
+  font-family: 'Zpix', 'Press Start 2P', 'Courier New', monospace;
+  margin: 0;
+}
+
+.workbench-close {
+  background: rgba(255, 215, 0, 0.1);
+  border: 2px solid rgba(255, 215, 0, 0.3);
+  color: #FFD700;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Zpix', 'Press Start 2P', 'Courier New', monospace;
+  transition: all 0.3s ease;
+  border-radius: 5px;
+}
+
+.workbench-close:hover {
+  background: rgba(255, 215, 0, 0.3);
+  border-color: #FFD700;
+  transform: scale(1.1);
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.workbench-content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+/* 学习数据统计样式 */
+.workspace-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 215, 0, 0.3);
+  border-radius: 8px;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  background: rgba(255, 215, 0, 0.1);
+  border-color: rgba(255, 215, 0, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.2);
+}
+
+.stat-icon {
+  font-size: 24px;
+}
+
+.stat-info {
+  flex: 1;
+}
+
+.stat-value {
+  color: #FFD700;
+  font-size: 20px;
+  font-weight: bold;
+  font-family: 'Zpix', 'Press Start 2P', 'Courier New', monospace;
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
+  font-family: 'Zpix', 'Press Start 2P', 'Courier New', monospace;
+}
+
+/* 关卡进度样式 */
+.workspace-chart {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.workspace-chart h3 {
+  color: #fff;
+  font-size: 16px;
+  margin-bottom: 12px;
+  font-family: 'Zpix', 'Press Start 2P', 'Courier New', monospace;
+}
+
+.level-progress {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 15px;
+}
+
+.level-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.level-item:last-child {
+  margin-bottom: 0;
+}
+
+.level-name {
+  width: 60px;
+  color: #fff;
+  font-size: 14px;
+  font-family: 'Zpix', 'Press Start 2P', 'Courier New', monospace;
+  flex-shrink: 0;
+  text-align: left;
+}
+
+.level-bar {
+  flex: 1;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.level-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #FFD700, #FFA500);
+  border-radius: 6px;
+  transition: width 0.5s ease;
+}
+
+.level-score {
+  width: 60px;
+  color: #FFD700;
+  font-size: 14px;
+  text-align: right;
+  font-family: 'Zpix', 'Press Start 2P', 'Courier New', monospace;
+  flex-shrink: 0;
+}
+
+/* 滚动条样式 */
+.workbench-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.workbench-content::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+}
+
+.workbench-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 215, 0, 0.5);
+  border-radius: 4px;
+}
+
+.workbench-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 215, 0, 0.8);
+}

@@ -22,7 +22,7 @@ function initMinePage() {
     const workbenchSection = document.querySelector('.workbench-section');
     if (workbenchSection) {
         workbenchSection.addEventListener('click', function () {
-            alert('工作台功能开发中');
+            showWorkbenchPage();
         });
     }
 
