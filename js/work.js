@@ -113,12 +113,16 @@ function onLeaveWorkbenchPage() {
 function loadWorkspaceData() {
   const API_BASE_URL = 'http://47.98.245.103:5000';
   const userId = localStorage.getItem('pixelTownUserId');
-  if (!userId) return;
+  if (!userId) {
+    console.log('用户未登录');
+    return;
+  }
 
   // 加载进度数据
   fetch(`${API_BASE_URL}/get_progress?user_id=${userId}`)
     .then(res => res.json())
     .then(data => {
+      console.log('进度数据:', data);
       if (data.status === 'success' && data.data) {
         const user = data.data;
         let completedLevels = 0;
@@ -129,8 +133,12 @@ function loadWorkspaceData() {
           const score = user[`level${i}_score`] || 0;
           if (score > 0) completedLevels++;
         }
-        document.getElementById('stat-levels').textContent = `${completedLevels}/7`;
-        document.getElementById('stat-score').textContent = user.game_score || 0;
+        const statLevels = document.getElementById('stat-levels');
+        const statScore = document.getElementById('stat-score');
+        const levelProgress = document.getElementById('level-progress');
+
+        if (statLevels) statLevels.textContent = `${completedLevels}/7`;
+        if (statScore) statScore.textContent = user.game_score || 0;
 
         // 渲染关卡进度条
         let progressHTML = '';
@@ -140,22 +148,30 @@ function loadWorkspaceData() {
           const percent = maxScore > 0 ? (score / maxScore * 100) : 0;
           progressHTML += `<div class="level-item"><span class="level-name">第${i}关</span><div class="level-bar"><div class="level-fill" style="width:${percent}%"></div></div><span class="level-score">${score}分</span></div>`;
         }
-        document.getElementById('level-progress').innerHTML = progressHTML;
+        if (levelProgress) levelProgress.innerHTML = progressHTML;
+      } else {
+        console.log('获取进度数据失败:', data.message);
       }
     })
-    .catch(() => { });
+    .catch(error => {
+      console.error('加载进度数据失败:', error);
+    });
 
   // 加载错题数据
   fetch(`${API_BASE_URL}/get_user_tags?user_id=${userId}`)
     .then(res => res.json())
     .then(data => {
+      console.log('错题数据:', data);
       let wrongCount = 0;
       if (data.data && Array.isArray(data.data)) {
         data.data.forEach(t => wrongCount += t.wrong_count || 0);
       }
-      document.getElementById('stat-wrong').textContent = wrongCount;
+      const statWrong = document.getElementById('stat-wrong');
+      if (statWrong) statWrong.textContent = wrongCount;
     })
-    .catch(() => { });
+    .catch(error => {
+      console.error('加载错题数据失败:', error);
+    });
 }
 
 /**

@@ -55,7 +55,7 @@ function initMinePage() {
     const leaderboardSection = document.querySelector('.leaderboard-section');
     if (leaderboardSection) {
         leaderboardSection.addEventListener('click', function () {
-            alert('排行榜功能开发中');
+            showLeaderboardPanel();
         });
     }
 

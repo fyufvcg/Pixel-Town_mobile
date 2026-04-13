@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>测试工作台页面</title>
+    <link rel="stylesheet" href="css/work.css">
+</head>
+<body>
+    <div id="workbenchPage" class="page workbench-page" style="display: block;">
+        <div class="workbench-header">
+            <h1 class="workbench-title">学习工作台</h1>
+            <button class="workbench-close" onclick="closeWorkbenchPage()">×</button>
+        </div>
+        <div class="workbench-content">
+            <div class="workspace-stats" id="workspace-stats">
+                <div class="stat-card">
+                    <div class="stat-icon">🎮</div>
+                    <div class="stat-info">
+                        <div class="stat-value" id="stat-levels">2/7</div>
+                        <div class="stat-label">已完成关卡</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⭐</div>
+                    <div class="stat-info">
+                        <div class="stat-value" id="stat-score">30</div>
+                        <div class="stat-label">总得分</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">❌</div>
+                    <div class="stat-info">
+                        <div class="stat-value" id="stat-wrong">5</div>
+                        <div class="stat-label">错题数</div>
+                    </div>
+                </div>
+            </div>
+            <div class="workspace-chart">
+                <h3>关卡进度</h3>
+                <div class="level-progress" id="level-progress">
+                    <div class="level-item">
+                        <span class="level-name">第1关</span>
+                        <div class="level-bar">
+                            <div class="level-fill" style="width:25%"></div>
+                        </div>
+                        <span class="level-score">15分</span>
+                    </div>
+                    <div class="level-item">
+                        <span class="level-name">第2关</span>
+                        <div class="level-bar">
+                            <div class="level-fill" style="width:0%"></div>
+                        </div>
+                        <span class="level-score">0分</span>
+                    </div>
+                    <div class="level-item">
+                        <span class="level-name">第3关</span>
+                        <div class="level-bar">
+                            <div class="level-fill" style="width:0%"></div>
+                        </div>
+                        <span class="level-score">0分</span>
+                    </div>
+                    <div class="level-item">
+                        <span class="level-name">第4关</span>
+                        <div class="level-bar">
+                            <div class="level-fill" style="width:8.77%"></div>
+                        </div>
+                        <span class="level-score">15分</span>
+                    </div>
+                    <div class="level-item">
+                        <span class="level-name">第5关</span>
+                        <div class="level-bar">
+                            <div class="level-fill" style="width:0%"></div>
+                        </div>
+                        <span class="level-score">0分</span>
+                    </div>
+                    <div class="level-item">
+                        <span class="level-name">第6关</span>
+                        <div class="level-bar">
+                            <div class="level-fill" style="width:0%"></div>
+                        </div>
+                        <span class="level-score">0分</span>
+                    </div>
+                    <div class="level-item">
+                        <span class="level-name">第7关</span>
+                        <div class="level-bar">
+                            <div class="level-fill" style="width:0%"></div>
+                        </div>
+                        <span class="level-score">0分</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function closeWorkbenchPage() {
+            document.getElementById('workbenchPage').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

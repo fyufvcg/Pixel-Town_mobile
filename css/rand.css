@@ -1,0 +1,259 @@
+/* 排行榜面板样式 */
+.leaderboard-panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, #2c1810 0%, #3d2317 100%);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+}
+
+.leaderboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.3);
+    border-bottom: 2px solid rgba(255, 215, 0, 0.5);
+    position: relative;
+}
+
+.leaderboard-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #FFD700, transparent);
+}
+
+.leaderboard-title {
+    color: #FFD700;
+    font-size: 24px;
+    font-weight: bold;
+    text-shadow: 2px 2px 0 #000;
+    font-family: 'Zpix', 'Press Start 2P', 'Courier New', monospace;
+    margin: 0;
+}
+
+.leaderboard-close {
+    background: rgba(255, 215, 0, 0.1);
+    border: 2px solid rgba(255, 215, 0, 0.3);
+    color: #FFD700;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Zpix', 'Press Start 2P', 'Courier New', monospace;
+    transition: all 0.3s ease;
+    border-radius: 5px;
+}
+
+.leaderboard-close:hover {
+    background: rgba(255, 215, 0, 0.3);
+    border-color: #FFD700;
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.leaderboard-content {
+    flex: 1;
+    padding: 20px;
+    padding-bottom: 120px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 120px);
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE and Edge */
+}
+
+/* 隐藏WebKit浏览器的滚动条 */
+.leaderboard-content::-webkit-scrollbar {
+    display: none;
+}
+
+.leaderboard-list {
+    flex: 1;
+    margin-bottom: 20px;
+}
+
+.leaderboard-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    margin-bottom: 10px;
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.leaderboard-item:hover {
+    background: rgba(255, 215, 0, 0.05);
+    border-color: rgba(255, 215, 0, 0.4);
+}
+
+.leaderboard-item.top-1 {
+    background: rgba(255, 215, 0, 0.1);
+    border-color: #FFD700;
+}
+
+.leaderboard-item.top-2 {
+    background: rgba(192, 192, 192, 0.1);
+    border-color: #C0C0C0;
+}
+
+.leaderboard-item.top-3 {
+    background: rgba(205, 127, 50, 0.1);
+    border-color: #CD7F32;
+}
+
+.leaderboard-rank {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 215, 0, 0.2);
+    border-radius: 50%;
+    color: #FFD700;
+    font-weight: bold;
+    font-family: 'Zpix', 'Press Start 2P', 'Courier New', monospace;
+    flex-shrink: 0;
+}
+
+.leaderboard-item.top-1 .leaderboard-rank {
+    background: #FFD700;
+    color: #000;
+}
+
+.leaderboard-item.top-2 .leaderboard-rank {
+    background: #C0C0C0;
+    color: #000;
+}
+
+.leaderboard-item.top-3 .leaderboard-rank {
+    background: #CD7F32;
+    color: #000;
+}
+
+.leaderboard-user {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.leaderboard-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255, 215, 0, 0.5);
+}
+
+.leaderboard-username {
+    color: #fff;
+    font-size: 14px;
+    font-family: 'Zpix', 'Press Start 2P', 'Courier New', monospace;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.leaderboard-level {
+    width: 60px;
+    color: #fff;
+    font-size: 12px;
+    font-family: 'Zpix', 'Press Start 2P', 'Courier New', monospace;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.leaderboard-score {
+    width: 60px;
+    color: #FFD700;
+    font-size: 12px;
+    font-weight: bold;
+    font-family: 'Zpix', 'Press Start 2P', 'Courier New', monospace;
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.leaderboard-loading {
+    text-align: center;
+    padding: 40px;
+    color: #FFD700;
+    font-family: 'Zpix', 'Press Start 2P', 'Courier New', monospace;
+}
+
+.leaderboard-empty {
+    text-align: center;
+    padding: 40px;
+    color: #fff;
+    font-family: 'Zpix', 'Press Start 2P', 'Courier New', monospace;
+}
+
+.leaderboard-my-position-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 20px;
+    background: #2c1810;
+    border-top: 2px solid rgba(255, 215, 0, 0.3);
+    z-index: 1001;
+}
+
+.leaderboard-my-position {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    background: rgba(255, 215, 0, 0.1);
+    border-radius: 8px;
+    border: 2px solid #FFD700;
+    flex-wrap: wrap;
+}
+
+.leaderboard-no-rank {
+    text-align: center;
+    padding: 20px;
+    color: #FFD700;
+    font-family: 'Zpix', 'Press Start 2P', 'Courier New', monospace;
+    background: rgba(255, 215, 0, 0.05);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+/* 滚动条样式 */
+.leaderboard-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.leaderboard-content::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+}
+
+.leaderboard-content::-webkit-scrollbar-thumb {
+    background: rgba(255, 215, 0, 0.5);
+    border-radius: 4px;
+}
+
+.leaderboard-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 215, 0, 0.8);
+}
