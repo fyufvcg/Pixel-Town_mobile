@@ -236,7 +236,7 @@
   height: 100%;
   background-color: rgba(0, 0, 0, 0.7);
   z-index: 2000;
-  overflow: hidden;
+  overflow: auto;
   opacity: 0;
   transition: all 0.3s ease;
   cursor: pointer;
@@ -246,21 +246,22 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 20px;
   opacity: 1;
 }
 
 .edit-profile-content {
   position: relative;
-  width: 85%;
-  max-width: 320px;
+  width: 100%;
+  max-width: 400px;
   background: linear-gradient(145deg, #8B4513, #654321);
   border: 3px solid #FFD700;
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5),
     inset 0 2px 4px rgba(255, 255, 255, 0.1);
-  transform: scale(0.9);
-  opacity: 0;
+  transform: scale(1);
+  opacity: 1;
   transition: all 0.3s ease;
   font-family: 'Zpix', sans-serif;
   image-rendering: pixelated;
@@ -268,7 +269,7 @@
 }
 
 .edit-profile-modal.active .edit-profile-content {
-  transform: scale(1.1);
+  transform: scale(1);
   opacity: 1;
 }
 
