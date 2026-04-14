@@ -407,7 +407,7 @@ levelContent['notice-6'] = {
                         <div class="upload-text">点击或拖拽上传图片</div>
                         <div class="upload-hint">支持 JPG、PNG 格式</div>
                     </div>
-                    <input type="file" id="file-input-1" class="file-input" accept="image/jpeg,image/png" onchange="handleImageUpload1(this)" style="display: none;">
+                    <input type="file" id="file-input-1" class="file-input" accept="image/*" onchange="handleImageUpload1(this)" style="display: none;">
                     <div class="uploaded-images" id="uploaded-images-1"></div>
                 </div>
             </div>
@@ -421,7 +421,7 @@ levelContent['notice-6'] = {
                         <div class="upload-text">点击或拖拽上传图片</div>
                         <div class="upload-hint">支持 JPG、PNG 格式</div>
                     </div>
-                    <input type="file" id="file-input-2" class="file-input" accept="image/jpeg,image/png" onchange="handleImageUpload2(this)" style="display: none;">
+                    <input type="file" id="file-input-2" class="file-input" accept="image/*" onchange="handleImageUpload2(this)" style="display: none;">
                     <div class="uploaded-images" id="uploaded-images-2"></div>
                 </div>
             </div>

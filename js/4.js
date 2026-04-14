@@ -300,7 +300,7 @@ function loadQuizContent() {
               <div class="upload-text">点击或拖拽上传图片</div>
               <div class="upload-hint">支持 JPG、PNG 格式</div>
             </div>
-            <input type="file" id="quiz-file-input-1" class="file-input" accept="image/jpeg,image/png" onchange="handleQuizImageUpload1(this)" style="display: none;">
+            <input type="file" id="quiz-file-input-1" class="file-input" accept="image/*" onchange="handleQuizImageUpload1(this)" style="display: none;">
             <div class="uploaded-images" id="quiz-uploaded-images-1"></div>
           </div>
         </div>
@@ -315,7 +315,7 @@ function loadQuizContent() {
               <div class="upload-text">点击或拖拽上传图片</div>
               <div class="upload-hint">支持 JPG、PNG 格式</div>
             </div>
-            <input type="file" id="quiz-file-input-2" class="file-input" accept="image/jpeg,image/png" onchange="handleQuizImageUpload2(this)" style="display: none;">
+            <input type="file" id="quiz-file-input-2" class="file-input" accept="image/*" onchange="handleQuizImageUpload2(this)" style="display: none;">
             <div class="uploaded-images" id="quiz-uploaded-images-2"></div>
           </div>
         </div>
@@ -333,7 +333,7 @@ function loadQuizContent() {
               <div class="upload-text">点击或拖拽上传图片</div>
               <div class="upload-hint">支持 JPG、PNG 格式</div>
             </div>
-            <input type="file" id="quiz-file-input-3" class="file-input" accept="image/jpeg,image/png" onchange="handleQuizImageUpload3(this)" style="display: none;">
+            <input type="file" id="quiz-file-input-3" class="file-input" accept="image/*" onchange="handleQuizImageUpload3(this)" style="display: none;">
             <div class="uploaded-images" id="quiz-uploaded-images-3"></div>
           </div>
         </div>
@@ -351,7 +351,7 @@ function loadQuizContent() {
               <div class="upload-text">点击或拖拽上传图片</div>
               <div class="upload-hint">支持 JPG、PNG 格式</div>
             </div>
-            <input type="file" id="quiz-file-input-4" class="file-input" accept="image/jpeg,image/png" onchange="handleQuizImageUpload4(this)" style="display: none;">
+            <input type="file" id="quiz-file-input-4" class="file-input" accept="image/*" onchange="handleQuizImageUpload4(this)" style="display: none;">
             <div class="uploaded-images" id="quiz-uploaded-images-4"></div>
           </div>
         </div>
@@ -366,7 +366,7 @@ function loadQuizContent() {
               <div class="upload-text">点击或拖拽上传图片</div>
               <div class="upload-hint">支持 JPG、PNG 格式</div>
             </div>
-            <input type="file" id="quiz-file-input-5" class="file-input" accept="image/jpeg,image/png" onchange="handleQuizImageUpload5(this)" style="display: none;">
+            <input type="file" id="quiz-file-input-5" class="file-input" accept="image/*" onchange="handleQuizImageUpload5(this)" style="display: none;">
             <div class="uploaded-images" id="quiz-uploaded-images-5"></div>
           </div>
         </div>
