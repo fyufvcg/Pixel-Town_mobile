@@ -129,7 +129,12 @@
                     <input type="text" id="registerUsername" placeholder="用户名" required>
                 </div>
                 <div class="auth-form-group">
-                    <input type="password" id="registerPassword" placeholder="密码" required>
+                    <input type="password" id="registerPassword" placeholder="密码" required oninput="checkPasswordStrength()">
+                    <div class="password-strength" id="passwordStrength">
+                        <div class="strength-item" id="strength-length">○ 至少8位</div>
+                        <div class="strength-item" id="strength-number">○ 包含数字</div>
+                        <div class="strength-item" id="strength-letter">○ 包含大小写字母</div>
+                    </div>
                 </div>
                 <div class="auth-form-group">
                     <input type="password" id="registerConfirmPassword" placeholder="确认密码" required>

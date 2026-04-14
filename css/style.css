@@ -2652,6 +2652,32 @@ body {
     color: rgba(255, 255, 255, 0.5);
 }
 
+.password-strength {
+    margin-top: 10px;
+    padding: 8px 12px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+}
+
+.strength-item {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 4px 0;
+    transition: all 0.2s ease;
+}
+
+.strength-item.valid {
+    color: #00FF88;
+}
+
+.strength-item.valid::before {
+    content: '● ';
+}
+
+.strength-item::before {
+    content: '○ ';
+}
+
 .auth-submit-btn {
     width: 100%;
     padding: 15px;
