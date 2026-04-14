@@ -325,6 +325,11 @@ document.addEventListener('DOMContentLoaded', function () {
  * 当切换到科普页面时调用
  */
 function onSwitchToSciencePage() {
+    // 解锁茶艺大师成就
+    if (typeof unlockAchievement === 'function') {
+        unlockAchievement('tea_master');
+    }
+
     // 检查是否需要显示弹窗（刷新页面后第一次进入或关闭网页后重新打开）
     const hasShownScienceModal = sessionStorage.getItem('hasShownScienceModal');
     if (!hasShownScienceModal) {
@@ -389,7 +394,7 @@ const categoryArticlesMap = {
     '交通工具': typeof vehicleArticles !== 'undefined' ? vehicleArticles : [],
     '生活用品': typeof dailyUseArticles !== 'undefined' ? dailyUseArticles : [],
     '生物自然': typeof bioNatureArticles !== 'undefined' ? bioNatureArticles : []
-    
+
 };
 
 let fluidRandomArticles = [];
@@ -422,19 +427,19 @@ function calculateTagWeight(article) {
 function getSmartArticles(category, limit = 5) {
     const articles = categoryArticlesMap[category];
     if (!articles || articles.length === 0) return [];
-    
+
     if (category === '流体力学') {
         return fluidRandomArticles.slice(0, limit);
     }
-    
+
     const articlesWithWeight = articles.map((article, index) => ({
         article: article,
         index: index,
         weight: calculateTagWeight(article)
     }));
-    
+
     articlesWithWeight.sort((a, b) => b.weight - a.weight);
-    
+
     return articlesWithWeight.slice(0, limit).map(item => ({
         ...item.article,
         originalIndex: item.index
@@ -447,7 +452,7 @@ function showCategoryArticles(category) {
         alert('暂无该分类的文章');
         return;
     }
-    
+
     let articlesHTML = `<div class="articles-list">`;
     smartArticles.forEach((article) => {               // ← 修改这里
         const index = article.originalIndex;             // ← 添加这行
@@ -464,7 +469,7 @@ function showCategoryArticles(category) {
         `;
     });
     articlesHTML += `</div>`;
-    
+
     createArticleListModal(category, articlesHTML);
 }
 
@@ -472,7 +477,7 @@ function showArticleDetail(articleIndex, category) {
     const articles = categoryArticlesMap[category];
     const article = articles[articleIndex];
     if (!article) return;
-    
+
     let articleHTML = `
         <div class="article-detail">
             <div class="article-image">
@@ -501,7 +506,7 @@ function showArticleDetail(articleIndex, category) {
             </div>
         </div>
     `;
-    
+
     createArticleDetailModal(article.title, articleHTML);
 }
 
@@ -509,18 +514,18 @@ function checkArticleAnswer(category, articleIndex) {
     const articles = categoryArticlesMap[category];
     const article = articles[articleIndex];
     if (!article) return;
-    
+
     const selectedOption = document.querySelector('input[name="article-question"]:checked');
     const resultDiv = document.getElementById('answer-result');
-    
+
     if (!selectedOption) {
         resultDiv.innerHTML = '<p class="error">请选择一个选项</p>';
         return;
     }
-    
+
     const userAnswer = selectedOption.value;
     const correctAnswer = article.correctAnswer;
-    
+
     if (userAnswer === correctAnswer) {
         resultDiv.innerHTML = '<p class="correct">✓ 回答正确！</p>';
     } else {
@@ -530,14 +535,14 @@ function checkArticleAnswer(category, articleIndex) {
 
 function createArticleListModal(category, content) {
     closeAllModals();
-    
+
     const modalOverlay = document.createElement('div');
     modalOverlay.className = 'modal-overlay article-list-modal';
     modalOverlay.id = 'articleListModal';
-    
+
     const modalContent = document.createElement('div');
     modalContent.className = 'modal-content article-list-content';
-    
+
     modalContent.innerHTML = `
         <button class="modal-close" onclick="closeArticleListModal()">
             <span>×</span>
@@ -549,17 +554,17 @@ function createArticleListModal(category, content) {
             ${content}
         </div>
     `;
-    
+
     modalOverlay.appendChild(modalContent);
     document.body.appendChild(modalOverlay);
-    
+
     setTimeout(() => {
         modalOverlay.classList.add('active');
     }, 10);
-    
+
     document.body.style.overflow = 'hidden';
-    
-    modalOverlay.addEventListener('click', function(e) {
+
+    modalOverlay.addEventListener('click', function (e) {
         if (e.target === modalOverlay) {
             closeArticleListModal();
         }
@@ -568,14 +573,14 @@ function createArticleListModal(category, content) {
 
 function createArticleDetailModal(title, content) {
     closeAllModals();
-    
+
     const modalOverlay = document.createElement('div');
     modalOverlay.className = 'modal-overlay article-detail-modal';
     modalOverlay.id = 'articleDetailModal';
-    
+
     const modalContent = document.createElement('div');
     modalContent.className = 'modal-content article-detail-content';
-    
+
     modalContent.innerHTML = `
         <button class="modal-close" onclick="closeArticleDetailModal()">
             <span>×</span>
@@ -587,17 +592,17 @@ function createArticleDetailModal(title, content) {
             ${content}
         </div>
     `;
-    
+
     modalOverlay.appendChild(modalContent);
     document.body.appendChild(modalOverlay);
-    
+
     setTimeout(() => {
         modalOverlay.classList.add('active');
     }, 10);
-    
+
     document.body.style.overflow = 'hidden';
-    
-    modalOverlay.addEventListener('click', function(e) {
+
+    modalOverlay.addEventListener('click', function (e) {
         if (e.target === modalOverlay) {
             closeArticleDetailModal();
         }

@@ -98,7 +98,7 @@ function fetchTagStatsFromServer() {
             resolve(getTagStats());
             return;
         }
-        
+
         fetch(`${API_BASE_URL}/get_user_tags?user_id=${userId}`)
             .then(res => res.json())
             .then(data => {
@@ -122,13 +122,13 @@ function fetchTagStatsFromServer() {
 
 function incrementTagErrors(tags) {
     if (!tags || !Array.isArray(tags)) return;
-    
+
     const stats = getTagStats();
     tags.forEach(tag => {
         stats[tag] = (stats[tag] || 0) + 1;
     });
     saveTagStats(stats);
-    
+
     // 尝试同步到服务器
     syncTagStatsToServer(stats);
 }
@@ -144,7 +144,7 @@ function getWeakTags(limit = 5) {
 function syncTagStatsToServer(stats) {
     const userId = localStorage.getItem('pixelTownUserId');
     if (!userId) return;
-    
+
     Object.entries(stats).forEach(([tagName, wrongCount]) => {
         fetch(`${API_BASE_URL}/add_tag_wrong`, {
             method: 'POST',
@@ -160,7 +160,7 @@ function syncTagStatsToServer(stats) {
 function trackQuestionResult(level, questionType, questionNum, isCorrect) {
     const key = `${questionType}${questionNum}`;
     const tags = questionTags[level]?.[key];
-    
+
     if (!isCorrect && tags) {
         incrementTagErrors(tags);
     }
@@ -169,81 +169,81 @@ function trackQuestionResult(level, questionType, questionNum, isCorrect) {
 function showWeaknessChartModal(tags) {
     const existingModal = document.getElementById('weakness-chart-modal');
     if (existingModal) existingModal.remove();
-    
+
     const total = tags.reduce((sum, t) => sum + t.count, 0);
     const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#C9CBCF'];
-    
+
     const modal = document.createElement('div');
     modal.id = 'weakness-chart-modal';
     modal.className = 'weakness-chart-modal';
-    
+
     const modalContent = document.createElement('div');
     modalContent.className = 'weakness-chart-content';
     modalContent.style.textAlign = 'center';
-    
+
     const closeBtn = document.createElement('span');
     closeBtn.className = 'weakness-chart-close';
     closeBtn.innerHTML = '&times;';
     closeBtn.addEventListener('click', () => modal.remove());
     modalContent.appendChild(closeBtn);
-    
+
     const modalTitle = document.createElement('div');
     modalTitle.className = 'weakness-chart-title';
     modalTitle.textContent = '薄弱知识点分布';
     modalTitle.style.textAlign = 'center';
     modalContent.appendChild(modalTitle);
-    
+
     const chartContainer = document.createElement('div');
     chartContainer.className = 'weakness-chart-small';
     chartContainer.style.margin = '0 auto 20px';
     chartContainer.style.display = 'flex';
     chartContainer.style.justifyContent = 'center';
-    
+
     const svgSize = 180;
     const strokeWidth = 28;
     const radius = (svgSize - strokeWidth) / 2;
-    
+
     const svgWrapper = document.createElement('div');
     svgWrapper.style.position = 'relative';
     svgWrapper.style.width = svgSize + 'px';
     svgWrapper.style.height = svgSize + 'px';
-    
+
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svg.setAttribute('viewBox', `0 0 ${svgSize} ${svgSize}`);
     svg.style.width = svgSize + 'px';
     svg.style.height = svgSize + 'px';
     svg.style.transform = 'rotate(-90deg)';
-    
+
     let currentAngle = 0;
     const paths = [];
-    
+
     tags.forEach((tag, index) => {
         const percent = tag.count / total;
         const startAngle = currentAngle;
         const endAngle = currentAngle + (percent * 360);
-        
+
         const startRad = (startAngle - 90) * Math.PI / 180;
         const endRad = (endAngle - 90) * Math.PI / 180;
-        
+
         const x1 = svgSize / 2 + radius * Math.cos(startRad);
         const y1 = svgSize / 2 + radius * Math.sin(startRad);
         const x2 = svgSize / 2 + radius * Math.cos(endRad);
         const y2 = svgSize / 2 + radius * Math.sin(endRad);
-        
+
         const largeArcFlag = percent > 0.5 ? 1 : 0;
-        
+
         const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         path.setAttribute('d', `M ${x1} ${y1} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2}`);
         path.setAttribute('fill', 'none');
         path.setAttribute('stroke', colors[index % colors.length]);
         path.setAttribute('stroke-width', strokeWidth);
         path.setAttribute('stroke-linecap', 'round');
-        
+
         paths.push(path);
         svg.appendChild(path);
         currentAngle = endAngle;
     });
-    
+
     const centerText = document.createElement('div');
     centerText.className = 'chart-center-text';
     centerText.style.position = 'absolute';
@@ -252,15 +252,15 @@ function showWeaknessChartModal(tags) {
     centerText.style.transform = 'translate(-50%, -50%)';
     centerText.style.textAlign = 'center';
     centerText.innerHTML = `<div style="color: #FFD700; font-size: 12px; margin-bottom: 4px;">总错题</div><div style="color: #FFD700; font-size: 28px; font-weight: bold;">${total}</div>`;
-    
+
     svgWrapper.appendChild(svg);
     svgWrapper.appendChild(centerText);
     chartContainer.appendChild(svgWrapper);
     modalContent.appendChild(chartContainer);
-    
+
     const legendContainer = document.createElement('div');
     legendContainer.className = 'weakness-legend';
-    
+
     tags.forEach((tag, index) => {
         const percentage = ((tag.count / total) * 100).toFixed(1);
         const legendItem = document.createElement('div');
@@ -268,11 +268,11 @@ function showWeaknessChartModal(tags) {
         legendItem.innerHTML = `<span class="legend-color" style="background:${colors[index % colors.length]}"></span><span class="legend-name">${tag.name}</span><span class="legend-count">${tag.count}题 (${percentage}%)</span>`;
         legendContainer.appendChild(legendItem);
     });
-    
+
     modalContent.appendChild(legendContainer);
     modal.appendChild(modalContent);
     document.body.appendChild(modal);
-    
+
     modal.addEventListener('click', (e) => {
         if (e.target === modal) modal.remove();
     });
@@ -923,12 +923,12 @@ function checkLoginStatus() {
     console.log('用户ID:', userId);
     const authButtons = document.getElementById('authButtons');
     const loadingHint = document.getElementById('loadingHint');
-    
+
     if (userId) {
         console.log('已登录，准备跳转');
         if (authButtons) authButtons.style.display = 'none';
         if (loadingHint) loadingHint.style.display = 'block';
-        setTimeout(function() {
+        setTimeout(function () {
             console.log('执行跳转');
             goToMainPage();
         }, 1000);
@@ -981,7 +981,7 @@ function handleLogin(event) {
     const username = document.getElementById('loginUsername').value;
     const password = document.getElementById('loginPassword').value;
     console.log('用户名:', username);
-    
+
     fetch(`${API_BASE_URL}/login`, {
         method: 'POST',
         headers: {
@@ -992,32 +992,32 @@ function handleLogin(event) {
             password: password
         })
     })
-    .then(res => {
-        console.log('响应状态:', res.status);
-        return res.json();
-    })
-    .then(data => {
-        console.log('响应数据:', data);
-        // 兼容处理：检查 success 或 message 中是否包含"成功"
-        const loginSuccess = data.success || (data.message && data.message.includes('成功'));
-        console.log('loginSuccess:', loginSuccess);
-        if (loginSuccess) {
-            console.log('登录成功，准备跳转');
-            localStorage.setItem('pixelTownUsername', data.username || document.getElementById('loginUsername').value);
-            localStorage.setItem('pixelTownUserId', data.user_id || Date.now().toString());
-            console.log('关闭登录弹窗');
-            closeLoginModal();
-            console.log('调用 goToMainPageNoAnimation');
-            goToMainPageNoAnimation();
-        } else {
-            console.log('登录失败:', data.message);
-            alert(data.message || '登录失败');
-        }
-    })
-    .catch(err => {
-        console.error('登录错误:', err);
-        alert('登录失败，请稍后重试');
-    });
+        .then(res => {
+            console.log('响应状态:', res.status);
+            return res.json();
+        })
+        .then(data => {
+            console.log('响应数据:', data);
+            // 兼容处理：检查 success 或 message 中是否包含"成功"
+            const loginSuccess = data.success || (data.message && data.message.includes('成功'));
+            console.log('loginSuccess:', loginSuccess);
+            if (loginSuccess) {
+                console.log('登录成功，准备跳转');
+                localStorage.setItem('pixelTownUsername', data.username || document.getElementById('loginUsername').value);
+                localStorage.setItem('pixelTownUserId', data.user_id || Date.now().toString());
+                console.log('关闭登录弹窗');
+                closeLoginModal();
+                console.log('调用 goToMainPageNoAnimation');
+                goToMainPageNoAnimation();
+            } else {
+                console.log('登录失败:', data.message);
+                alert(data.message || '登录失败');
+            }
+        })
+        .catch(err => {
+            console.error('登录错误:', err);
+            alert('登录失败，请稍后重试');
+        });
 }
 
 function handleRegister(event) {
@@ -1025,12 +1025,12 @@ function handleRegister(event) {
     const username = document.getElementById('registerUsername').value;
     const password = document.getElementById('registerPassword').value;
     const confirmPassword = document.getElementById('registerConfirmPassword').value;
-    
+
     if (password !== confirmPassword) {
         alert('两次输入的密码不一致');
         return;
     }
-    
+
     fetch(`${API_BASE_URL}/register`, {
         method: 'POST',
         headers: {
@@ -1041,21 +1041,21 @@ function handleRegister(event) {
             password: password
         })
     })
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
-            localStorage.setItem('pixelTownUsername', data.username);
-            localStorage.setItem('pixelTownUserId', data.user_id);
-            closeRegisterModal();
-            goToMainPage();
-        } else {
-            alert(data.message || '注册失败');
-        }
-    })
-    .catch(err => {
-        console.error('注册错误:', err);
-        alert('注册失败，请稍后重试');
-    });
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                localStorage.setItem('pixelTownUsername', data.username);
+                localStorage.setItem('pixelTownUserId', data.user_id);
+                closeRegisterModal();
+                goToMainPage();
+            } else {
+                alert(data.message || '注册失败');
+            }
+        })
+        .catch(err => {
+            console.error('注册错误:', err);
+            alert('注册失败，请稍后重试');
+        });
 }
 
 /**
@@ -1068,6 +1068,12 @@ function goToMainPageNoAnimation() {
     document.getElementById('homePage').style.display = 'block';
     document.getElementById('topFunctionArea').style.display = 'flex';
     document.getElementById('bottomRightBox').style.display = 'flex';
+
+    // 解锁初次造访成就
+    if (typeof unlockAchievement === 'function') {
+        unlockAchievement('first_visit');
+    }
+
     showModal();
 }
 
@@ -1085,6 +1091,11 @@ function goToMainPage() {
             document.getElementById('homePage').style.display = 'block';
             document.getElementById('topFunctionArea').style.display = 'flex';
             document.getElementById('bottomRightBox').style.display = 'flex';
+
+            // 解锁初次造访成就
+            if (typeof unlockAchievement === 'function') {
+                unlockAchievement('first_visit');
+            }
         },
         function () {
             console.log('Transition completed');
@@ -1827,6 +1838,11 @@ let currentPageId = null;
 
 // 切换记笔记窗口
 function toggleNoteWindow() {
+    // 解锁笔记达人成就
+    if (typeof unlockAchievement === 'function') {
+        unlockAchievement('note_taker');
+    }
+
     const noteWindow = document.getElementById('note-window');
 
     if (noteWindowVisible) {
@@ -2202,15 +2218,15 @@ function syncNoteToServer(page) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(noteData)
         }).then(res => res.json())
-        .then(data => {
-            if (data.status === 'success') {
-                page.serverId = data.note_id;
-                localStorage.setItem('pixelTownNotePages', JSON.stringify(notePages));
-        
-        notePages.forEach(p => syncNoteToServer(p));
-            }
-        })
-        .catch(err => console.log('同步笔记失败:', err));
+            .then(data => {
+                if (data.status === 'success') {
+                    page.serverId = data.note_id;
+                    localStorage.setItem('pixelTownNotePages', JSON.stringify(notePages));
+
+                    notePages.forEach(p => syncNoteToServer(p));
+                }
+            })
+            .catch(err => console.log('同步笔记失败:', err));
     }
 }
 
@@ -2235,10 +2251,10 @@ function loadNotesFromServer() {
 
 // 显示保存成功弹窗
 function showSaveSuccessModal() {
-// 同步笔记到服务器
+    // 同步笔记到服务器
 
 
-// 从服务器加载笔记
+    // 从服务器加载笔记
     createSaveSuccessModal();
     const modal = document.querySelector('.save-success-modal');
     modal.classList.add('show');
@@ -2268,10 +2284,10 @@ function saveNoteContent() {
     // 保存到 localStorage
     try {
         localStorage.setItem('pixelTownNotePages', JSON.stringify(notePages));
-        
+
         // 同步到服务器
         syncNoteToServer(page);
-        
+
         showSaveSuccessModal();
     } catch (e) {
         console.log('保存笔记失败:', e);
@@ -2303,14 +2319,14 @@ function initializeNotePages() {
             // 保存合并后的笔记
             localStorage.setItem('pixelTownNotePages', JSON.stringify(notePages));
         }
-        
+
         // 按标题中的数字排序（第1页、第2页...）
         notePages.sort((a, b) => {
             const numA = parseInt(a.title.replace(/\D/g, '')) || 0;
             const numB = parseInt(b.title.replace(/\D/g, '')) || 0;
             return numA - numB;
         });
-        
+
         // 确保至少有一页
         if (notePages.length === 0) {
             createNewPage('第1页');
@@ -2318,7 +2334,7 @@ function initializeNotePages() {
             currentPageId = notePages[0].id;
             loadPage(currentPageId);
         }
-        
+
         updatePageTabs();
     }).catch(() => {
         // 如果加载失败，使用本地笔记
@@ -2455,7 +2471,7 @@ function confirmDeletePage() {
 
     const index = notePages.findIndex(p => p.id === currentPageId);
     const deletedPage = notePages[index];
-    
+
     // 删除服务器上的笔记
     if (deletedPage && deletedPage.serverId) {
         fetch(`${API_BASE_URL}/delete_note`, {
@@ -2464,7 +2480,7 @@ function confirmDeletePage() {
             body: JSON.stringify({ note_id: deletedPage.serverId })
         }).catch(err => console.log('删除笔记失败:', err));
     }
-    
+
     notePages.splice(index, 1);
 
     currentPageId = notePages[Math.max(0, index - 1)].id;
@@ -2552,7 +2568,7 @@ function saveAllPages() {
 
     try {
         localStorage.setItem('pixelTownNotePages', JSON.stringify(notePages));
-        
+
         // 同步到服务器
         notePages.forEach(page => {
             syncNoteToServer(page);
@@ -2668,6 +2684,13 @@ document.addEventListener('DOMContentLoaded', function () {
             item.addEventListener('click', toggleAIWindow);
         }
     });
+
+    // 解锁街道探险家成就
+    setTimeout(() => {
+        if (typeof unlockAchievement === 'function') {
+            unlockAchievement('street_explorer');
+        }
+    }, 5000); // 延迟5秒，确保用户有时间探索页面
 });
 
 

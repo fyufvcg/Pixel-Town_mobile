@@ -35,10 +35,10 @@ function initMinePage() {
                 alert('请先登录后再查看薄弱点');
                 return;
             }
-            
+
             const response = await fetch(`${API_BASE_URL}/get_user_tags?user_id=${userId}`);
             const data = await response.json();
-            
+
             if (data.status === 'success' && data.data && data.data.length > 0) {
                 const tags = data.data.map(item => ({
                     name: item.tag_name,
@@ -62,8 +62,8 @@ function initMinePage() {
     // 初始化成就点击事件
     const achievementsSection = document.querySelector('.achievements-section');
     if (achievementsSection) {
-        achievementsSection.addEventListener('click', function () {
-            alert('成就系统开发中');
+        achievementsSection.addEventListener('click', async function () {
+            await showAchievementPanel();
         });
     }
 }

@@ -23,6 +23,11 @@ window.addEventListener('load', () => {
 
 // 切换AI对话窗口
 function toggleAIWindow() {
+    // 解锁AI助手成就
+    if (typeof unlockAchievement === 'function') {
+        unlockAchievement('ai_helper');
+    }
+
     const aiWindow = document.getElementById('ai-window');
 
     if (aiWindowVisible) {

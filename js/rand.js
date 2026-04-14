@@ -22,7 +22,10 @@ function showLeaderboardPanel() {
         leaderboardPanel.innerHTML = `
             <div class="leaderboard-header">
                 <h1 class="leaderboard-title">排行榜</h1>
-                <button class="leaderboard-close" onclick="closeLeaderboardPanel()">×</button>
+                <div class="leaderboard-header-buttons">
+                    <button class="leaderboard-refresh" onclick="loadLeaderboardData()">↻</button>
+                    <button class="leaderboard-close" onclick="closeLeaderboardPanel()">×</button>
+                </div>
             </div>
             <div class="leaderboard-content">
                 <div class="leaderboard-list" id="leaderboard-list">
@@ -39,6 +42,12 @@ function showLeaderboardPanel() {
 
     // 加载排行榜数据
     loadLeaderboardData();
+
+    // 设置自动刷新（每30秒）
+    if (window.leaderboardRefreshInterval) {
+        clearInterval(window.leaderboardRefreshInterval);
+    }
+    window.leaderboardRefreshInterval = setInterval(loadLeaderboardData, 30000);
 }
 
 /**
@@ -59,6 +68,12 @@ function closeLeaderboardPanel() {
     const minePage = document.getElementById('minePage');
     if (minePage) {
         minePage.style.display = 'block';
+    }
+
+    // 清除自动刷新定时器
+    if (window.leaderboardRefreshInterval) {
+        clearInterval(window.leaderboardRefreshInterval);
+        window.leaderboardRefreshInterval = null;
     }
 }
 
