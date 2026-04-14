@@ -395,7 +395,7 @@ body {
 }
 
 .article-question {
-    background: rgba(255, 255, 255, 0.6);
+    background: rgba(13, 1, 1, 0.6);
     padding: 15px;
     border-radius: 12px;
     border: 2px solid #D2B48C;
@@ -408,7 +408,7 @@ body {
 }
 
 .question-text {
-    color: #333;
+    color: #000000;
     font-size: 14px;
     margin-bottom: 15px;
 }
@@ -439,7 +439,7 @@ body {
 }
 
 .option-text {
-    color: #333;
+    color: #000000;
     font-size: 13px;
 }
 
