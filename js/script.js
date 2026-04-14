@@ -954,6 +954,66 @@ function closeLoginModal() {
 function showRegisterModal() {
     document.getElementById('registerModal').style.display = 'flex';
     document.body.style.overflow = 'hidden';
+    resetPasswordStrength();
+}
+
+function resetPasswordStrength() {
+    const strengthLength = document.getElementById('strength-length');
+    const strengthNumber = document.getElementById('strength-number');
+    const strengthLetter = document.getElementById('strength-letter');
+    if (strengthLength) {
+        strengthLength.classList.remove('valid');
+        strengthLength.textContent = '○ 至少8位';
+    }
+    if (strengthNumber) {
+        strengthNumber.classList.remove('valid');
+        strengthNumber.textContent = '○ 包含数字';
+    }
+    if (strengthLetter) {
+        strengthLetter.classList.remove('valid');
+        strengthLetter.textContent = '○ 包含大小写字母';
+    }
+}
+
+function checkPasswordStrength() {
+    const password = document.getElementById('registerPassword').value;
+    const strengthLength = document.getElementById('strength-length');
+    const strengthNumber = document.getElementById('strength-number');
+    const strengthLetter = document.getElementById('strength-letter');
+    
+    if (strengthLength) {
+        if (password.length >= 8) {
+            strengthLength.classList.add('valid');
+            strengthLength.textContent = '● 至少8位';
+        } else {
+            strengthLength.classList.remove('valid');
+            strengthLength.textContent = '○ 至少8位';
+        }
+    }
+    
+    if (strengthNumber) {
+        if (/\d/.test(password)) {
+            strengthNumber.classList.add('valid');
+            strengthNumber.textContent = '● 包含数字';
+        } else {
+            strengthNumber.classList.remove('valid');
+            strengthNumber.textContent = '○ 包含数字';
+        }
+    }
+    
+    if (strengthLetter) {
+        if (/[a-z]/.test(password) && /[A-Z]/.test(password)) {
+            strengthLetter.classList.add('valid');
+            strengthLetter.textContent = '● 包含大小写字母';
+        } else {
+            strengthLetter.classList.remove('valid');
+            strengthLetter.textContent = '○ 包含大小写字母';
+        }
+    }
+}
+
+function validatePassword(password) {
+    return password.length >= 8 && /\d/.test(password) && /[a-z]/.test(password) && /[A-Z]/.test(password);
 }
 
 function closeRegisterModal() {
@@ -1025,7 +1085,12 @@ function handleRegister(event) {
     const username = document.getElementById('registerUsername').value;
     const password = document.getElementById('registerPassword').value;
     const confirmPassword = document.getElementById('registerConfirmPassword').value;
-
+    
+    if (!validatePassword(password)) {
+        alert('密码复杂度不足，请确保密码至少6位，且包含数字和字母');
+        return;
+    }
+    
     if (password !== confirmPassword) {
         alert('两次输入的密码不一致');
         return;
@@ -1109,17 +1174,12 @@ function goToMainPage() {
  * @param {HTMLElement} element - 点击的导航项元素
  */
 function switchNav(element) {
-    // 检查是否可以切换导航（弹窗是否关闭且NPC对话是否完成）
+    // 检查是否可以切换导航（弹窗是否关闭）
     const modalOverlay = document.getElementById('modalOverlay');
-    const homepageBlocker = document.getElementById('homepageBlocker');
     const sciencePageBlocker = document.getElementById('sciencePageBlocker');
 
-    // 如果弹窗显示或遮罩层显示，不允许切换导航
+    // 如果弹窗显示，不允许切换导航
     if (modalOverlay && modalOverlay.style.display !== 'none') {
-        return;
-    }
-
-    if (homepageBlocker && homepageBlocker.style.display !== 'none') {
         return;
     }
 
@@ -3524,7 +3584,7 @@ function redoLevel6Practice() {
                             <div class="upload-text">点击或拖拽上传图片</div>
                             <div class="upload-hint">支持 JPG、PNG 格式</div>
                         </div>
-                        <input type="file" id="file-input-1" class="file-input" accept="image/jpeg,image/png" onchange="handleImageUpload1(this)" style="display: none;">
+                        <input type="file" id="file-input-1" class="file-input" accept="image/*" onchange="handleImageUpload1(this)" style="display: none;">
                         <div class="uploaded-images" id="uploaded-images-1"></div>
                     </div>
                 </div>
@@ -3538,7 +3598,7 @@ function redoLevel6Practice() {
                             <div class="upload-text">点击或拖拽上传图片</div>
                             <div class="upload-hint">支持 JPG、PNG 格式</div>
                         </div>
-                        <input type="file" id="file-input-2" class="file-input" accept="image/jpeg,image/png" onchange="handleImageUpload2(this)" style="display: none;">
+                        <input type="file" id="file-input-2" class="file-input" accept="image/*" onchange="handleImageUpload2(this)" style="display: none;">
                         <div class="uploaded-images" id="uploaded-images-2"></div>
                     </div>
                 </div>

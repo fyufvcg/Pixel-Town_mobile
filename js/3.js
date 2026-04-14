@@ -214,11 +214,11 @@ function submitLevel3Practice() {
 
     const practiceAnswers = [
         { question: '问题1', correct: 'cd' },
-        { question: '问题2', correct: 'bd' },
+        { question: '问题2', correct: 'bcd' },
         { question: '问题3', correct: 'c' },
-        { question: '填空题1', correct: '等值' },
-        { question: '填空题2', correct: '作用力与反作用' },
-        { question: '填空题3', correct: '大于' }
+        { question: '填空题1', correct: '等值;反向;共线;同性质' },
+        { question: '填空题2', correct: '作用力与反作用;支持' },
+        { question: '填空题3', correct: '大于;超重;作用力与反作用' }
     ];
 
     for (let i = 1; i <= PRACTICE_CHOICE_COUNT; i++) {

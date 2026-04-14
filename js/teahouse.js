@@ -194,18 +194,11 @@ function showScienceNPC() {
             showScienceNPCTalk();
         }, 0);
 
-        // 初始化NPC点击事件
+        // 移除旧的点击事件，避免重复添加
+        npc.removeEventListener('click', handleScienceNPCClick);
         npc.addEventListener('click', function () {
             handleScienceNPCClick();
         });
-
-        // 初始化遮罩层点击事件 - 点击屏幕任意地方切换对话
-        const blocker = document.getElementById('sciencePageBlocker');
-        if (blocker) {
-            blocker.addEventListener('click', function () {
-                handleScienceNPCClick();
-            });
-        }
     }
 }
 
@@ -269,20 +262,19 @@ function showScienceNPCTalk() {
 function handleScienceNPCClick() {
     const state = scienceNPCDialogueState;
 
-    // 检查是否已经完成所有对话
-    if (state.index >= scienceNPCDialogues.length - 1) {
-        // 所有对话已完成
-        state.isComplete = true;
-        // 隐藏NPC和遮罩层
-        completeScienceNPCDialogue();
-        return;
-    }
-
     // 切换到下一条对话
     state.index = state.index + 1;
+    
+    // 如果超过最后一条，回到第一条（循环轮换）
+    if (state.index >= scienceNPCDialogues.length) {
+        state.index = 0;
+    }
 
     // 显示新对话
     showScienceNPCTalk();
+    
+    // 保持未完成状态
+    state.isComplete = false;
 }
 
 /**
@@ -302,9 +294,9 @@ function completeScienceNPCDialogue() {
         }, 300);
     }
 
-    // 隐藏NPC
+    // NPC保持显示（常驻）
     if (npc) {
-        npc.style.display = 'none';
+        npc.style.display = 'block';
     }
 
     // 隐藏遮罩层，允许科普页面交互
@@ -337,6 +329,11 @@ function onSwitchToSciencePage() {
         createScienceModal();
         // 标记弹窗已显示（会话期间）
         sessionStorage.setItem('hasShownScienceModal', 'true');
+    } else {
+        // 弹窗已显示过，仍然需要显示NPC
+        setTimeout(() => {
+            showScienceNPC();
+        }, 100);
     }
 
     // 确保轮播图已初始化

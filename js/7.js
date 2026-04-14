@@ -307,7 +307,7 @@ function loadChapterTestContent() {
               <div class="upload-text">点击或拖拽上传图片</div>
               <div class="upload-hint">支持 JPG、PNG 格式</div>
             </div>
-            <input type="file" id="chapter-file-input-1" class="file-input" accept="image/jpeg,image/png" onchange="handleChapterImageUpload1(this)" style="display: none;">
+            <input type="file" id="chapter-file-input-1" class="file-input" accept="image/*" onchange="handleChapterImageUpload1(this)" style="display: none;">
             <div class="uploaded-images" id="chapter-uploaded-images-1"></div>
           </div>
         </div>
@@ -323,7 +323,7 @@ function loadChapterTestContent() {
               <div class="upload-text">点击或拖拽上传图片</div>
               <div class="upload-hint">支持 JPG、PNG 格式</div>
             </div>
-            <input type="file" id="chapter-file-input-2" class="file-input" accept="image/jpeg,image/png" onchange="handleChapterImageUpload2(this)" style="display: none;">
+            <input type="file" id="chapter-file-input-2" class="file-input" accept="image/*" onchange="handleChapterImageUpload2(this)" style="display: none;">
             <div class="uploaded-images" id="chapter-uploaded-images-2"></div>
           </div>
         </div>
@@ -339,7 +339,7 @@ function loadChapterTestContent() {
               <div class="upload-text">点击或拖拽上传图片</div>
               <div class="upload-hint">支持 JPG、PNG 格式</div>
             </div>
-            <input type="file" id="chapter-file-input-3" class="file-input" accept="image/jpeg,image/png" onchange="handleChapterImageUpload3(this)" style="display: none;">
+            <input type="file" id="chapter-file-input-3" class="file-input" accept="image/*" onchange="handleChapterImageUpload3(this)" style="display: none;">
             <div class="uploaded-images" id="chapter-uploaded-images-3"></div>
           </div>
         </div>
@@ -354,7 +354,7 @@ function loadChapterTestContent() {
               <div class="upload-text">点击或拖拽上传图片</div>
               <div class="upload-hint">支持 JPG、PNG 格式</div>
             </div>
-            <input type="file" id="chapter-file-input-4" class="file-input" accept="image/jpeg,image/png" onchange="handleChapterImageUpload4(this)" style="display: none;">
+            <input type="file" id="chapter-file-input-4" class="file-input" accept="image/*" onchange="handleChapterImageUpload4(this)" style="display: none;">
             <div class="uploaded-images" id="chapter-uploaded-images-4"></div>
           </div>
         </div>
@@ -369,7 +369,7 @@ function loadChapterTestContent() {
               <div class="upload-text">点击或拖拽上传图片</div>
               <div class="upload-hint">支持 JPG、PNG 格式</div>
             </div>
-            <input type="file" id="chapter-file-input-5" class="file-input" accept="image/jpeg,image/png" onchange="handleChapterImageUpload5(this)" style="display: none;">
+            <input type="file" id="chapter-file-input-5" class="file-input" accept="image/*" onchange="handleChapterImageUpload5(this)" style="display: none;">
             <div class="uploaded-images" id="chapter-uploaded-images-5"></div>
           </div>
         </div>
