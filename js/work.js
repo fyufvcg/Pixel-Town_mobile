@@ -146,7 +146,13 @@ function loadWorkspaceData() {
           const score = user[`level${i}_score`] || 0;
           const maxScore = maxScores[i];
           const percent = maxScore > 0 ? (score / maxScore * 100) : 0;
-          progressHTML += `<div class="level-item"><span class="level-name">第${i}关</span><div class="level-bar"><div class="level-fill" style="width:${percent}%"></div></div><span class="level-score">${score}分</span></div>`;
+          progressHTML += `<div class="level-item">
+                            <span class="level-name">第${i}关</span>
+                            <div class="level-bar">
+                                <div class="level-fill" style="width:${percent}%"></div>
+                            </div>
+                            <span class="level-score">${score}分</span>
+                        </div>`;
         }
         if (levelProgress) levelProgress.innerHTML = progressHTML;
       } else {
