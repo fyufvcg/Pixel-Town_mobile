@@ -980,7 +980,7 @@ function checkPasswordStrength() {
     const strengthLength = document.getElementById('strength-length');
     const strengthNumber = document.getElementById('strength-number');
     const strengthLetter = document.getElementById('strength-letter');
-    
+
     if (strengthLength) {
         if (password.length >= 8) {
             strengthLength.classList.add('valid');
@@ -990,7 +990,7 @@ function checkPasswordStrength() {
             strengthLength.textContent = '○ 至少8位';
         }
     }
-    
+
     if (strengthNumber) {
         if (/\d/.test(password)) {
             strengthNumber.classList.add('valid');
@@ -1000,7 +1000,7 @@ function checkPasswordStrength() {
             strengthNumber.textContent = '○ 包含数字';
         }
     }
-    
+
     if (strengthLetter) {
         if (/[a-z]/.test(password) && /[A-Z]/.test(password)) {
             strengthLetter.classList.add('valid');
@@ -1085,12 +1085,12 @@ function handleRegister(event) {
     const username = document.getElementById('registerUsername').value;
     const password = document.getElementById('registerPassword').value;
     const confirmPassword = document.getElementById('registerConfirmPassword').value;
-    
+
     if (!validatePassword(password)) {
         alert('密码复杂度不足，请确保密码至少6位，且包含数字和字母');
         return;
     }
-    
+
     if (password !== confirmPassword) {
         alert('两次输入的密码不一致');
         return;
@@ -3496,7 +3496,7 @@ function showLevel6PracticeExplanations() {
     `;
 
     explanationHTML += `
-        <div class="test-result-buttons explanation-buttons">
+        <div class="test-result-buttons explanation-buttons" style="justify-content: center;">
             <button class="test-result-button" onclick="redoLevel6Practice()">返回重做</button>
         </div>
     `;
@@ -3512,6 +3512,27 @@ function showLevel6PracticeExplanations() {
 
 // 重做第五关实战演练
 function redoLevel6Practice() {
+    // 重置存储的答案
+    currentLevel6Answers = null;
+    currentLevel6ChoiceFillScore = 0;
+
+    // 确保导航栏定位在"选择"上
+    const navItems = document.querySelectorAll('#level5PracticePage .practice-nav-item');
+    navItems.forEach(item => item.classList.remove('active'));
+
+    const choiceNavItem = document.querySelector('#level5PracticePage .practice-nav-item[onclick*="choice"]');
+    if (choiceNavItem) {
+        choiceNavItem.classList.add('active');
+    }
+
+    const tabContents = document.querySelectorAll('#level5PracticePage .practice-tab-content');
+    tabContents.forEach(content => content.style.display = 'none');
+
+    const choiceContent = document.getElementById('level5-choice-content');
+    if (choiceContent) {
+        choiceContent.style.display = 'block';
+    }
+
     // 重新加载实战演练页面
     const practiceContent = document.querySelector('#level5PracticePage .practice-content');
     if (practiceContent) {
@@ -3605,7 +3626,7 @@ function redoLevel6Practice() {
                 
                 <!-- 提交答案按钮 -->
                 <div class="practice-footer">
-                    <button class="test-submit" onclick="submitLevel6Practice()">提交答案</button>
+                    <button class="practice-submit" onclick="submitLevel6Practice()">提交答案</button>
                 </div>
             </div>
         `;
@@ -4077,7 +4098,7 @@ function showLevel5AnswerExplanations() {
         }
     ];
 
-    let explanationHTML = '<div class="test-result"><div class="test-result-header"><button class="test-result-back-button" onclick="backToLevel5Results()">← 返回</button><h3>答案解析</h3></div>';
+    let explanationHTML = '<div class="test-result"><div class="test-result-header"><button class="test-result-back-button" onclick="backToLevel5Results()">返回</button><h3>答案解析</h3></div>';
 
     explanations.forEach((item, index) => {
         const qNum = index + 1;

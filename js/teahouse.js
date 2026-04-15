@@ -264,7 +264,7 @@ function handleScienceNPCClick() {
 
     // 切换到下一条对话
     state.index = state.index + 1;
-    
+
     // 如果超过最后一条，回到第一条（循环轮换）
     if (state.index >= scienceNPCDialogues.length) {
         state.index = 0;
@@ -272,7 +272,7 @@ function handleScienceNPCClick() {
 
     // 显示新对话
     showScienceNPCTalk();
-    
+
     // 保持未完成状态
     state.isComplete = false;
 }

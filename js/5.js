@@ -93,7 +93,7 @@ async function gradeLevel4ApplicationWithAI(questionText, imageData, correctAnsw
 
     try {
         const thinkingDiv = showLevel4AIThinking();
-        
+
         // 调用AI进行真正的图片批改
         const response = await fetch(DOUBAO_API_CONFIG.url, {
             method: "POST",
@@ -195,6 +195,23 @@ function closeLevel4Page() {
 function showLevel4LearningCenter() {
     document.getElementById('level4Page').style.display = 'none';
     document.getElementById('level4LearningCenterPage').style.display = 'flex';
+
+    // 确保导航栏定位在“先导”上
+    const navItems = document.querySelectorAll('#level4LearningCenterPage .nav-item');
+    navItems.forEach(item => item.classList.remove('active'));
+
+    const guideNavItem = document.querySelector('#level4LearningCenterPage .nav-item[onclick*="guide"]');
+    if (guideNavItem) {
+        guideNavItem.classList.add('active');
+    }
+
+    const tabContents = document.querySelectorAll('#level4LearningCenterPage .tab-content');
+    tabContents.forEach(content => content.style.display = 'none');
+
+    const guideContent = document.getElementById('level4-guide-content');
+    if (guideContent) {
+        guideContent.style.display = 'block';
+    }
 }
 
 // 关闭第四关学习中心
@@ -207,6 +224,23 @@ function closeLevel4LearningCenter() {
 function openLevel4PracticePage() {
     document.getElementById('level4Page').style.display = 'none';
     document.getElementById('level4PracticePage').style.display = 'flex';
+
+    // 确保导航栏定位在“选择”上
+    const navItems = document.querySelectorAll('#level4PracticePage .practice-nav-item');
+    navItems.forEach(item => item.classList.remove('active'));
+
+    const choiceNavItem = document.querySelector('#level4PracticePage .practice-nav-item[onclick*="choice"]');
+    if (choiceNavItem) {
+        choiceNavItem.classList.add('active');
+    }
+
+    const tabContents = document.querySelectorAll('#level4PracticePage .practice-tab-content');
+    tabContents.forEach(content => content.style.display = 'none');
+
+    const choiceContent = document.getElementById('level4-choice-content');
+    if (choiceContent) {
+        choiceContent.style.display = 'block';
+    }
 }
 
 // 关闭第四关实战演练页面
@@ -378,7 +412,7 @@ function showLevel4AnswerExplanations() {
     const explanationHTML = `
         <div class="test-result">
             <div class="test-result-header">
-                <button class="test-result-back-button" onclick="redoLevel4Test()">返回</button>
+                <button class="test-result-back-button" onclick="showLevel4TestResultFromAnswerExplanation()">返回</button>
                 <h3>答案解析</h3>
             </div>
             
@@ -421,6 +455,102 @@ function showLevel4AnswerExplanations() {
     const testContent = document.getElementById('level4-test-content');
     if (testContent) {
         testContent.innerHTML = explanationHTML;
+    }
+}
+
+/**
+ * 从答案解析返回答题结果
+ */
+function showLevel4TestResultFromAnswerExplanation() {
+    let correctCount = 0;
+    let totalQuestions = 5;
+    let resultHTML = '<div class="test-result"><h3>答题结果</h3>';
+
+    // 问题1：关于合力与分力
+    const q1Answer = document.querySelector('input[name="level4-q1"]:checked');
+    const userAnswer1 = q1Answer ? q1Answer.value : '';
+    const isCorrect1 = userAnswer1 === 'c';
+    if (isCorrect1) correctCount++;
+    resultHTML += `
+        <div class="test-result-item ${isCorrect1 ? 'correct' : 'incorrect'}">
+            <p><strong>问题1：</strong>${isCorrect1 ? '✅ 正确' : '❌ 错误'}</p>
+            <p><strong>你的答案：</strong>${userAnswer1 || '未作答'}</p>
+            <p><strong>正确答案：</strong>C</p>
+        </div>
+    `;
+
+    // 问题2：关于力的分解
+    const q2Answer = document.querySelector('input[name="level4-q2"]:checked');
+    const userAnswer2 = q2Answer ? q2Answer.value : '';
+    const isCorrect2 = userAnswer2 === 'a' || userAnswer2 === 'c' || userAnswer2 === 'd';
+    if (isCorrect2) correctCount++;
+    resultHTML += `
+        <div class="test-result-item ${isCorrect2 ? 'correct' : 'incorrect'}">
+            <p><strong>问题2：</strong>${isCorrect2 ? '✅ 正确' : '❌ 错误'}</p>
+            <p><strong>你的答案：</strong>${userAnswer2 || '未作答'}</p>
+            <p><strong>正确答案：</strong>A、C、D</p>
+        </div>
+    `;
+
+    // 问题3：基础计算
+    const q3Answer = document.getElementById('level4-q3');
+    const userAnswer3 = q3Answer ? q3Answer.value : '';
+    const isCorrect3 = userAnswer3 === '5；1' || userAnswer3 === '5,1' || userAnswer3 === '5； 1' || userAnswer3 === '5, 1';
+    if (isCorrect3) correctCount++;
+    resultHTML += `
+        <div class="test-result-item ${isCorrect3 ? 'correct' : 'incorrect'}">
+            <p><strong>问题3：</strong>${isCorrect3 ? '✅ 正确' : '❌ 错误'}</p>
+            <p><strong>你的答案：</strong>${userAnswer3 || '未作答'}</p>
+            <p><strong>正确答案：</strong>5；1</p>
+        </div>
+    `;
+
+    // 问题4：力的合成定则
+    const q4Answer = document.getElementById('level4-q4');
+    const userAnswer4 = q4Answer ? q4Answer.value : '';
+    const isCorrect4 = userAnswer4.includes('平行四边形') && userAnswer4.includes('|F₁-F₂|') && userAnswer4.includes('F₁+F₂');
+    if (isCorrect4) correctCount++;
+    resultHTML += `
+        <div class="test-result-item ${isCorrect4 ? 'correct' : 'incorrect'}">
+            <p><strong>问题4：</strong>${isCorrect4 ? '✅ 正确' : '❌ 错误'}</p>
+            <p><strong>你的答案：</strong>${userAnswer4 || '未作答'}</p>
+            <p><strong>正确答案：</strong>平行四边形；|F₁-F₂|；F₁+F₂</p>
+        </div>
+    `;
+
+    // 问题5：判断选择
+    const q5Answer = document.querySelector('input[name="level4-q5"]:checked');
+    const userAnswer5 = q5Answer ? q5Answer.value : '';
+    const isCorrect5 = userAnswer5 === 'b' || userAnswer5 === 'c' || userAnswer5 === 'd';
+    if (isCorrect5) correctCount++;
+    resultHTML += `
+        <div class="test-result-item ${isCorrect5 ? 'correct' : 'incorrect'}">
+            <p><strong>问题5：</strong>${isCorrect5 ? '✅ 正确' : '❌ 错误'}</p>
+            <p><strong>你的答案：</strong>${userAnswer5 || '未作答'}</p>
+            <p><strong>正确答案：</strong>B、C、D</p>
+        </div>
+    `;
+
+    // 计算得分
+    const score = Math.round((correctCount / totalQuestions) * 100);
+    resultHTML += `
+        <div class="test-score">
+            <h4>得分：${score}分</h4>
+            <p>共${totalQuestions}题，正确${correctCount}题，错误${totalQuestions - correctCount}题</p>
+        </div>
+
+        <div class="test-result-buttons">
+            <button class="test-result-button" onclick="showLevel4AnswerExplanations()">答案解析</button>
+            <button class="test-result-button" onclick="redoLevel4Test()">返回重做</button>
+        </div>
+    `;
+
+    resultHTML += '</div>';
+
+    // 显示结果
+    const testContent = document.getElementById('level4-test-content');
+    if (testContent) {
+        testContent.innerHTML = resultHTML;
     }
 }
 
@@ -807,8 +937,8 @@ function updateLevel4TotalScore() {
     }
 }
 
-// 打开实验视频
-function openHookeVideo() {
+// 打开第四关实验视频
+function openLevel4HookeVideo() {
     // 关闭背景音乐
     const backgroundMusic = document.getElementById('bgMusic');
     if (backgroundMusic) {
@@ -816,9 +946,14 @@ function openHookeVideo() {
     }
 
     // 设置视频源
-    const videoSource = document.getElementById('videoSource');
-    if (videoSource) {
-        videoSource.src = 'vedios/共点力平衡的条件.mp4';
+    const hookeVideo = document.getElementById('hooke-video');
+    if (hookeVideo) {
+        const source = hookeVideo.querySelector('source');
+        if (source) {
+            source.src = 'vedios/共点力平衡的条件.mp4';
+            hookeVideo.load();
+            hookeVideo.play();
+        }
     }
 
     // 存储来源页面
@@ -895,7 +1030,7 @@ function showLevel4PracticeExplanations(answers) {
     }
 
     explanationsHTML += `
-        <div class="test-result-buttons">
+        <div class="test-result-buttons" style="justify-content: center;">
             <button class="test-result-button" onclick="redoLevel4Practice()">返回重做</button>
         </div>
     `;
@@ -1055,6 +1190,23 @@ function closeLevel5Page() {
 function showLevel5LearningCenter() {
     document.getElementById('level5Page').style.display = 'none';
     document.getElementById('level5LearningCenterPage').style.display = 'block';
+
+    // 确保导航栏定位在“先导”上
+    const navItems = document.querySelectorAll('#level5LearningCenterPage .nav-item');
+    navItems.forEach(item => item.classList.remove('active'));
+
+    const guideNavItem = document.querySelector('#level5LearningCenterPage .nav-item[onclick*="guide"]');
+    if (guideNavItem) {
+        guideNavItem.classList.add('active');
+    }
+
+    const tabContents = document.querySelectorAll('#level5LearningCenterPage .tab-content');
+    tabContents.forEach(content => content.style.display = 'none');
+
+    const guideContent = document.getElementById('level5-guide-content');
+    if (guideContent) {
+        guideContent.style.display = 'block';
+    }
 }
 
 // 关闭第五关学习中心
@@ -1067,6 +1219,23 @@ function closeLevel5LearningCenter() {
 function openLevel5PracticePage() {
     document.getElementById('level5Page').style.display = 'none';
     document.getElementById('level5PracticePage').style.display = 'block';
+
+    // 确保导航栏定位在“选择”上
+    const navItems = document.querySelectorAll('#level5PracticePage .practice-nav-item');
+    navItems.forEach(item => item.classList.remove('active'));
+
+    const choiceNavItem = document.querySelector('#level5PracticePage .practice-nav-item[onclick*="choice"]');
+    if (choiceNavItem) {
+        choiceNavItem.classList.add('active');
+    }
+
+    const tabContents = document.querySelectorAll('#level5PracticePage .practice-tab-content');
+    tabContents.forEach(content => content.style.display = 'none');
+
+    const choiceContent = document.getElementById('level5-choice-content');
+    if (choiceContent) {
+        choiceContent.style.display = 'block';
+    }
 }
 
 // 关闭第五关实战演练页面
@@ -1161,7 +1330,20 @@ function openForce合成Video() {
     }
 
     // 显示视频播放页面
-    document.getElementById('videoPlayerPage').style.display = 'flex';
+    const videoPlayerPage = document.getElementById('videoPlayerPage');
+    if (videoPlayerPage) {
+        videoPlayerPage.style.display = 'flex';
+        videoPlayerPage.style.alignItems = 'center';
+        videoPlayerPage.style.justifyContent = 'center';
+        videoPlayerPage.style.background = 'linear-gradient(145deg, rgba(0, 0, 0, 0.9), rgba(139, 69, 19, 0.8))';
+        videoPlayerPage.style.height = '100vh';
+        videoPlayerPage.style.padding = '20px';
+        videoPlayerPage.style.position = 'fixed';
+        videoPlayerPage.style.top = '0';
+        videoPlayerPage.style.left = '0';
+        videoPlayerPage.style.width = '100%';
+        videoPlayerPage.style.zIndex = '1000';
+    }
 }
 
 let forceCanvas, forceCtx;

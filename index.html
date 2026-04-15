@@ -130,7 +130,8 @@
                     <input type="text" id="registerUsername" placeholder="用户名" required>
                 </div>
                 <div class="auth-form-group">
-                    <input type="password" id="registerPassword" placeholder="密码" required oninput="checkPasswordStrength()">
+                    <input type="password" id="registerPassword" placeholder="密码" required
+                        oninput="checkPasswordStrength()">
                     <div class="password-strength" id="passwordStrength">
                         <div class="strength-item" id="strength-length">○ 至少8位</div>
                         <div class="strength-item" id="strength-number">○ 包含数字</div>
@@ -1945,7 +1946,7 @@
                         </ol>
 
                         <h5>5.实验演示：</h5>
-                        <button class="hooke-video-button" onclick="openHookeVideo()">📹 观看实验视频</button>
+                        <button class="hooke-video-button" onclick="openLevel4HookeVideo()">📹 观看实验视频</button>
                         <img src="images/test/第五关/力的合成平行四边形实验.png" alt="平行四边形实验"
                             style="max-width: 100%; height: auto; margin: 10px 0;">
                         <div class="learning-image-caption">图：力的合成平行四边形实验</div>
@@ -3038,7 +3039,9 @@
                         </div>
                     </div>
 
-                    <button class="test-submit" onclick="submitLevel6Practice()">提交答案</button>
+                    <div class="practice-footer">
+                        <button class="practice-submit" onclick="submitLevel6Practice()">提交答案</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -3866,9 +3869,8 @@
                                 <div class="upload-text">点击或拖拽上传图片</div>
                                 <div class="upload-hint">支持 JPG、PNG 格式</div>
                             </div>
-                            <input type="file" id="chapter-file-input-1" class="file-input"
-                                accept="image/*" onchange="handleChapterImageUpload1(this)"
-                                style="display: none;">
+                            <input type="file" id="chapter-file-input-1" class="file-input" accept="image/*"
+                                onchange="handleChapterImageUpload1(this)" style="display: none;">
                             <div class="uploaded-images" id="chapter-uploaded-images-1"></div>
                         </div>
                     </div>
@@ -3885,9 +3887,8 @@
                                 <div class="upload-text">点击或拖拽上传图片</div>
                                 <div class="upload-hint">支持 JPG、PNG 格式</div>
                             </div>
-                            <input type="file" id="chapter-file-input-2" class="file-input"
-                                accept="image/*" onchange="handleChapterImageUpload2(this)"
-                                style="display: none;">
+                            <input type="file" id="chapter-file-input-2" class="file-input" accept="image/*"
+                                onchange="handleChapterImageUpload2(this)" style="display: none;">
                             <div class="uploaded-images" id="chapter-uploaded-images-2"></div>
                         </div>
                     </div>
@@ -3904,9 +3905,8 @@
                                 <div class="upload-text">点击或拖拽上传图片</div>
                                 <div class="upload-hint">支持 JPG、PNG 格式</div>
                             </div>
-                            <input type="file" id="chapter-file-input-3" class="file-input"
-                                accept="image/*" onchange="handleChapterImageUpload3(this)"
-                                style="display: none;">
+                            <input type="file" id="chapter-file-input-3" class="file-input" accept="image/*"
+                                onchange="handleChapterImageUpload3(this)" style="display: none;">
                             <div class="uploaded-images" id="chapter-uploaded-images-3"></div>
                         </div>
                     </div>
@@ -3925,9 +3925,8 @@
                                 <div class="upload-text">点击或拖拽上传图片</div>
                                 <div class="upload-hint">支持 JPG、PNG 格式</div>
                             </div>
-                            <input type="file" id="chapter-file-input-4" class="file-input"
-                                accept="image/*" onchange="handleChapterImageUpload4(this)"
-                                style="display: none;">
+                            <input type="file" id="chapter-file-input-4" class="file-input" accept="image/*"
+                                onchange="handleChapterImageUpload4(this)" style="display: none;">
                             <div class="uploaded-images" id="chapter-uploaded-images-4"></div>
                         </div>
                     </div>
@@ -3947,9 +3946,8 @@
                                 <div class="upload-text">点击或拖拽上传图片</div>
                                 <div class="upload-hint">支持 JPG、PNG 格式</div>
                             </div>
-                            <input type="file" id="chapter-file-input-5" class="file-input"
-                                accept="image/*" onchange="handleChapterImageUpload5(this)"
-                                style="display: none;">
+                            <input type="file" id="chapter-file-input-5" class="file-input" accept="image/*"
+                                onchange="handleChapterImageUpload5(this)" style="display: none;">
                             <div class="uploaded-images" id="chapter-uploaded-images-5"></div>
                         </div>
                     </div>

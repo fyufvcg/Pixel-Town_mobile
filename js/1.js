@@ -56,6 +56,23 @@ document.addEventListener('DOMContentLoaded', function () {
 function showLearningCenter() {
   document.getElementById('level1Page').style.display = 'none';
   document.getElementById('learningCenterPage').style.display = 'block';
+
+  // 确保导航栏定位在“先导”上
+  const navItems = document.querySelectorAll('#learningCenterPage .nav-item');
+  navItems.forEach(item => item.classList.remove('active'));
+
+  const guideNavItem = document.querySelector('#learningCenterPage .nav-item[onclick*="guide"]');
+  if (guideNavItem) {
+    guideNavItem.classList.add('active');
+  }
+
+  const tabContents = document.querySelectorAll('#learningCenterPage .tab-content');
+  tabContents.forEach(content => content.style.display = 'none');
+
+  const guideContent = document.getElementById('guide-content');
+  if (guideContent) {
+    guideContent.style.display = 'block';
+  }
 }
 
 /**
@@ -116,6 +133,16 @@ function openHookeVideo() {
   const bgMusic = document.getElementById('bgMusic');
   if (bgMusic) {
     bgMusic.pause();
+  }
+
+  // 设置视频源为胡克定律.mp4
+  const hookeVideo = document.getElementById('hooke-video');
+  if (hookeVideo) {
+    const source = hookeVideo.querySelector('source');
+    if (source) {
+      source.src = 'vedios/胡克定律.mp4';
+      hookeVideo.load();
+    }
   }
 
   // 显示视频页面
@@ -529,7 +556,7 @@ function showPracticeResults(answers) {
         <div class="test-result">
             <div class="test-result-header">
                 <h3>答题结果</h3>
-                <button class="test-result-back-button" onclick="closePracticeResult()">关闭</button>
+
             </div>
     `;
 
@@ -672,7 +699,12 @@ function showPracticeExplanations() {
         </div>
     `;
 
-  explanationHTML += '</div>';
+  explanationHTML += `
+            <div class="test-result-buttons" style="justify-content: center;">
+                <button class="test-result-button" onclick="redoPractice()">返回重做</button>
+            </div>
+        </div>
+    `;
 
   // 显示解析
   const practiceContent = document.querySelector('#practicePage .practice-content');
@@ -683,19 +715,28 @@ function showPracticeExplanations() {
 
 // 重做实战演练
 function redoPractice() {
-  // 重置标签页显示
-  const navItems = document.querySelectorAll('.practice-nav .practice-nav-item');
-  navItems.forEach((item, index) => {
-    item.classList.remove('active');
-    if (index === 0) item.classList.add('active');
-  });
+  // 重置存储的答案
+  currentPracticeAnswers = null;
+  currentChoiceFillScore = 0;
 
-  const tabContents = document.querySelectorAll('.practice-tab-content');
-  tabContents.forEach((content, index) => {
-    content.style.display = index === 0 ? 'block' : 'none';
-  });
+  // 确保导航栏定位在"选择"上
+  const navItems = document.querySelectorAll('#practicePage .practice-nav-item');
+  navItems.forEach(item => item.classList.remove('active'));
 
-  // 重置内容
+  const choiceNavItem = document.querySelector('#practicePage .practice-nav-item[onclick*="choice"]');
+  if (choiceNavItem) {
+    choiceNavItem.classList.add('active');
+  }
+
+  const tabContents = document.querySelectorAll('#practicePage .practice-tab-content');
+  tabContents.forEach(content => content.style.display = 'none');
+
+  const choiceContent = document.getElementById('choice-content');
+  if (choiceContent) {
+    choiceContent.style.display = 'block';
+  }
+
+  // 重新加载实战演练内容
   loadPracticeContent();
 }
 
@@ -738,6 +779,24 @@ function switchPracticeTab(tab, tabId) {
 function openPracticePage() {
   document.getElementById('level1Page').style.display = 'none';
   document.getElementById('practicePage').style.display = 'block';
+
+  // 确保导航栏定位在“选择”上
+  const navItems = document.querySelectorAll('#practicePage .practice-nav-item');
+  navItems.forEach(item => item.classList.remove('active'));
+
+  const choiceNavItem = document.querySelector('#practicePage .practice-nav-item[onclick*="choice"]');
+  if (choiceNavItem) {
+    choiceNavItem.classList.add('active');
+  }
+
+  const tabContents = document.querySelectorAll('#practicePage .practice-tab-content');
+  tabContents.forEach(content => content.style.display = 'none');
+
+  const choiceContent = document.getElementById('choice-content');
+  if (choiceContent) {
+    choiceContent.style.display = 'block';
+  }
+
   // 不需要调用loadPracticeContent，因为HTML中已经有完整的标签页结构
 }
 
@@ -852,7 +911,11 @@ function showAnswerExplanations() {
     }
   ];
 
-  let explanationHTML = '<div class="test-result"><h3>答案解析</h3>';
+  let explanationHTML = '<div class="test-result">';
+  explanationHTML += '<div class="test-result-header">';
+  explanationHTML += '<button class="test-result-back-button" onclick="showTestResultFromAnswerExplanation()">返回</button>';
+  explanationHTML += '<h3>答案解析</h3>';
+  explanationHTML += '</div>';
 
   explanations.forEach((item, index) => {
     explanationHTML += `
@@ -875,6 +938,82 @@ function showAnswerExplanations() {
   const testContent = document.getElementById('test-content');
   if (testContent) {
     testContent.innerHTML = explanationHTML;
+  }
+}
+
+/**
+ * 从答案解析返回答题结果
+ */
+function showTestResultFromAnswerExplanation() {
+  // 第一关的答案
+  const answers = [
+    { question: '关于弹力的产生条件，下列说法正确的是（ ）', answer: 'c' },
+    { question: '关于摩擦力，下列说法正确的是（ ）', answer: 'c' },
+    { question: '一根弹簧原长10cm，在弹性限度内，当挂上5N的物体时，弹簧长度变为12cm。求弹簧的劲度系数k。', answer: '250' },
+    { question: '质量为2kg的物体静止在水平地面上，物体与地面间的动摩擦因数为0.3。用水平力F拉动物体，使其匀速运动，求拉力F的大小。（g取10m/s²）', answer: '6' },
+    { question: '关于重心，下列说法正确的是（ ）', answer: 'c' }
+  ];
+
+  let correctCount = 0;
+  let totalQuestions = answers.length;
+  let resultHTML = '<div class="test-result"><h3>答题结果</h3>';
+
+  answers.forEach((item, index) => {
+    const qNum = index + 1;
+    let userAnswer;
+
+    // 根据问题类型获取用户答案
+    if (qNum === 3 || qNum === 4) {
+      // 填空题
+      const inputElement = document.getElementById(`q${qNum}`);
+      userAnswer = inputElement ? inputElement.value.trim() : '';
+    } else {
+      // 选择题
+      const radioElements = document.getElementsByName(`q${qNum}`);
+      for (const radio of radioElements) {
+        if (radio.checked) {
+          userAnswer = radio.value;
+          break;
+        }
+      }
+    }
+
+    // 判断答案是否正确
+    const isCorrect = userAnswer === item.answer;
+    if (isCorrect) {
+      correctCount++;
+    }
+
+    // 生成结果HTML
+    resultHTML += `
+      <div class="test-result-item ${isCorrect ? 'correct' : 'incorrect'}">
+        <p><strong>问题${qNum}：</strong>${isCorrect ? '✅ 正确' : '❌ 错误'}</p>
+        <p><strong>你的答案：</strong>${userAnswer || '未作答'}</p>
+        <p><strong>正确答案：</strong>${item.answer.toUpperCase()}</p>
+      </div>
+    `;
+  });
+
+  // 计算得分
+  const score = Math.round((correctCount / totalQuestions) * 100);
+  resultHTML += `
+    <div class="test-score">
+      <h4>得分：${score}分</h4>
+      <p>共${totalQuestions}题，正确${correctCount}题，错误${totalQuestions - correctCount}题</p>
+    </div>
+
+    <div class="test-result-buttons">
+      <button class="test-result-button" onclick="showAnswerExplanations()">答案解析</button>
+      <button class="test-result-button" onclick="redoTest()">返回重做</button>
+    </div>
+  `;
+
+  resultHTML += '</div>';
+
+  // 显示结果
+  const testContent = document.getElementById('test-content');
+  if (testContent) {
+    testContent.innerHTML = resultHTML;
   }
 }
 

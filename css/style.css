@@ -2853,7 +2853,8 @@ body {
     line-height: 1.7;
 }
 
-.university-window-loading, .university-window-empty {
+.university-window-loading,
+.university-window-empty {
     display: flex;
     align-items: center;
     justify-content: center;

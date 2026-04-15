@@ -83,6 +83,23 @@ function closeLevel2Page() {
 function showLevel2LearningCenter() {
     document.getElementById('level2Page').style.display = 'none';
     document.getElementById('level2LearningCenterPage').style.display = 'block';
+
+    // 确保导航栏定位在“先导”上
+    const navItems = document.querySelectorAll('#level2LearningCenterPage .nav-item');
+    navItems.forEach(item => item.classList.remove('active'));
+
+    const guideNavItem = document.querySelector('#level2LearningCenterPage .nav-item[onclick*="guide"]');
+    if (guideNavItem) {
+        guideNavItem.classList.add('active');
+    }
+
+    const tabContents = document.querySelectorAll('#level2LearningCenterPage .tab-content');
+    tabContents.forEach(content => content.style.display = 'none');
+
+    const guideContent = document.getElementById('level2-guide-content');
+    if (guideContent) {
+        guideContent.style.display = 'block';
+    }
 }
 
 /**
@@ -120,6 +137,23 @@ function switchLevel2LearningTab(tab, tabId) {
 function openLevel2PracticePage() {
     document.getElementById('level2Page').style.display = 'none';
     document.getElementById('level2PracticePage').style.display = 'block';
+
+    // 确保导航栏定位在“选择”上
+    const navItems = document.querySelectorAll('#level2PracticePage .practice-nav-item');
+    navItems.forEach(item => item.classList.remove('active'));
+
+    const choiceNavItem = document.querySelector('#level2PracticePage .practice-nav-item[onclick*="choice"]');
+    if (choiceNavItem) {
+        choiceNavItem.classList.add('active');
+    }
+
+    const tabContents = document.querySelectorAll('#level2PracticePage .practice-tab-content');
+    tabContents.forEach(content => content.style.display = 'none');
+
+    const choiceContent = document.getElementById('level2-choice-content');
+    if (choiceContent) {
+        choiceContent.style.display = 'block';
+    }
 }
 
 /**
@@ -281,48 +315,28 @@ function submitLevel2Practice() {
     }
 
     let totalScore = choiceFillScore;
-    resultHTML += `<div class="test-score"><h4>总分：${totalScore}分</h4></div></div>`;
+    resultHTML += `
+        <div class="test-score"><h4>总分：${totalScore}分</h4></div>
+        
+        <div class="test-result-buttons">
+            <button class="test-result-button" onclick="showLevel2PracticeAnswerExplanation()">答案解析</button>
+            <button class="test-result-button" onclick="redoLevel2Practice()">返回重做</button>
+        </div>
+    </div>`;
 
     // 显示结果
-    showLevel2PracticeResult(resultHTML);
+    const practiceContent = document.querySelector('#level2PracticePage .practice-content');
+    if (practiceContent) {
+        practiceContent.innerHTML = resultHTML;
+    }
 }
 
-/**
- * 显示第二关实战演练结果
- * @param {string} resultHTML - 结果HTML
- */
-function showLevel2PracticeResult(resultHTML) {
-    // 创建结果弹窗
-    const resultModal = document.createElement('div');
-    resultModal.className = 'practice-result-modal';
-    resultModal.innerHTML = `
-        <div class="practice-result-content">
-            <div class="practice-result-header">
-                <h3>答题结果</h3>
-            </div>
-            <div class="practice-result-body">
-                ${resultHTML}
-            </div>
-            <div class="practice-result-footer">
-                <button class="practice-result-button" onclick="showLevel2PracticeAnswerExplanation()">答案解析</button>
-                <button class="practice-result-button" onclick="redoLevel2Practice()">返回重做</button>
-            </div>
-        </div>
-    `;
 
-    document.body.appendChild(resultModal);
-}
 
 /**
  * 显示第二关答案解析
  */
 function showLevel2PracticeAnswerExplanation() {
-    // 关闭当前结果弹窗
-    const resultModal = document.querySelector('.practice-result-modal');
-    if (resultModal) {
-        resultModal.remove();
-    }
-
     // 第二关实战演练的答案解析
     const explanations = [
         {
@@ -352,7 +366,13 @@ function showLevel2PracticeAnswerExplanation() {
     ];
 
     // 创建解析HTML
-    let explanationHTML = '<div class="test-result">';
+    let explanationHTML = `
+        <div class="test-result">
+            <div class="test-result-header">
+                <button class="test-result-back-button" onclick="showLevel2PracticeResultFromExplanation()">返回</button>
+                <h3>答案解析</h3>
+            </div>
+    `;
     explanations.forEach((item, index) => {
         explanationHTML += `
             <div class="test-result-item">
@@ -361,42 +381,33 @@ function showLevel2PracticeAnswerExplanation() {
             </div>
         `;
     });
-    explanationHTML += '</div>';
-
-    // 创建解析弹窗
-    const explanationModal = document.createElement('div');
-    explanationModal.className = 'practice-result-modal';
-    explanationModal.innerHTML = `
-        <div class="practice-result-content">
-            <div class="practice-result-header">
-                <button class="test-result-back-button" onclick="showLevel2PracticeResultFromExplanation()">返回</button>
-                <h3>答案解析</h3>
-            </div>
-            <div class="practice-result-body">
-                ${explanationHTML}
-            </div>
-            <div class="practice-result-footer">
-                <button class="practice-result-button" onclick="redoLevel2Practice()">返回重做</button>
+    explanationHTML += `
+            <div class="test-result-buttons" style="justify-content: center;">
+                <button class="test-result-button" onclick="redoLevel2Practice()">返回重做</button>
             </div>
         </div>
     `;
-    document.body.appendChild(explanationModal);
+
+    // 显示解析
+    const practiceContent = document.querySelector('#level2PracticePage .practice-content');
+    if (practiceContent) {
+        practiceContent.innerHTML = explanationHTML;
+    }
 }
 
 /**
  * 从实战演练答案解析返回答题结果
  */
 function showLevel2PracticeResultFromExplanation() {
-    // 关闭当前解析弹窗
-    const explanationModal = document.querySelector('.practice-result-modal');
-    if (explanationModal) {
-        explanationModal.remove();
-    }
-
     let correctCount = 0;
     let totalQuestions = 0;
     let choiceFillScore = 0;
-    let resultHTML = '<div class="test-result"><h3>答题结果</h3>';
+    let resultHTML = `
+        <div class="test-result">
+            <div class="test-result-header">
+                <h3>答题结果</h3>
+            </div>
+    `;
 
     const PRACTICE_CHOICE_COUNT = 3;
     const PRACTICE_FILL_COUNT = 3;
@@ -481,37 +492,45 @@ function showLevel2PracticeResultFromExplanation() {
     }
 
     let totalScore = choiceFillScore;
-    resultHTML += `<div class="test-score"><h4>总分：${totalScore}分</h4></div></div>`;
+    resultHTML += `
+        <div class="test-score"><h4>总分：${totalScore}分</h4></div>
+        
+        <div class="test-result-buttons">
+            <button class="test-result-button" onclick="showLevel2PracticeAnswerExplanation()">答案解析</button>
+            <button class="test-result-button" onclick="redoLevel2Practice()">返回重做</button>
+        </div>
+    </div>`;
 
     // 显示结果
-    const resultModal = document.createElement('div');
-    resultModal.className = 'practice-result-modal';
-    resultModal.innerHTML = `
-        <div class="practice-result-content">
-            <div class="practice-result-header">
-                <h3>答题结果</h3>
-            </div>
-            <div class="practice-result-body">
-                ${resultHTML}
-            </div>
-            <div class="practice-result-footer">
-                <button class="practice-result-button" onclick="showLevel2PracticeAnswerExplanation()">答案解析</button>
-                <button class="practice-result-button" onclick="redoLevel2Practice()">返回重做</button>
-            </div>
-        </div>
-    `;
-
-    document.body.appendChild(resultModal);
+    const practiceContent = document.querySelector('#level2PracticePage .practice-content');
+    if (practiceContent) {
+        practiceContent.innerHTML = resultHTML;
+    }
 }
 
 /**
  * 重新做第二关实战演练
  */
 function redoLevel2Practice() {
-    // 关闭当前弹窗
-    const resultModal = document.querySelector('.practice-result-modal');
-    if (resultModal) {
-        resultModal.remove();
+    // 重置存储的答案
+    currentLevel2Answers = null;
+    currentLevel2ChoiceFillScore = 0;
+
+    // 确保导航栏定位在"选择"上
+    const navItems = document.querySelectorAll('#level2PracticePage .practice-nav-item');
+    navItems.forEach(item => item.classList.remove('active'));
+
+    const choiceNavItem = document.querySelector('#level2PracticePage .practice-nav-item[onclick*="choice"]');
+    if (choiceNavItem) {
+        choiceNavItem.classList.add('active');
+    }
+
+    const tabContents = document.querySelectorAll('#level2PracticePage .practice-tab-content');
+    tabContents.forEach(content => content.style.display = 'none');
+
+    const choiceContent = document.getElementById('level2-choice-content');
+    if (choiceContent) {
+        choiceContent.style.display = 'block';
     }
 
     // 重置所有问题
@@ -641,7 +660,20 @@ function openFrictionPressureVideo() {
     }
 
     // 显示视频播放页面
-    document.getElementById('videoPlayerPage').style.display = 'flex';
+    const videoPlayerPage = document.getElementById('videoPlayerPage');
+    if (videoPlayerPage) {
+        videoPlayerPage.style.display = 'flex';
+        videoPlayerPage.style.alignItems = 'center';
+        videoPlayerPage.style.justifyContent = 'center';
+        videoPlayerPage.style.background = 'linear-gradient(145deg, rgba(0, 0, 0, 0.9), rgba(139, 69, 19, 0.8))';
+        videoPlayerPage.style.height = '100vh';
+        videoPlayerPage.style.padding = '20px';
+        videoPlayerPage.style.position = 'fixed';
+        videoPlayerPage.style.top = '0';
+        videoPlayerPage.style.left = '0';
+        videoPlayerPage.style.width = '100%';
+        videoPlayerPage.style.zIndex = '1000';
+    }
 }
 
 /**
@@ -668,7 +700,20 @@ function openStaticFrictionVideo() {
     }
 
     // 显示视频播放页面
-    document.getElementById('videoPlayerPage').style.display = 'flex';
+    const videoPlayerPage = document.getElementById('videoPlayerPage');
+    if (videoPlayerPage) {
+        videoPlayerPage.style.display = 'flex';
+        videoPlayerPage.style.alignItems = 'center';
+        videoPlayerPage.style.justifyContent = 'center';
+        videoPlayerPage.style.background = 'linear-gradient(145deg, rgba(0, 0, 0, 0.9), rgba(139, 69, 19, 0.8))';
+        videoPlayerPage.style.height = '100vh';
+        videoPlayerPage.style.padding = '20px';
+        videoPlayerPage.style.position = 'fixed';
+        videoPlayerPage.style.top = '0';
+        videoPlayerPage.style.left = '0';
+        videoPlayerPage.style.width = '100%';
+        videoPlayerPage.style.zIndex = '1000';
+    }
 }
 
 /**
@@ -861,16 +906,10 @@ function showLevel2TestResultFromAnswerExplanation() {
     // 获取答案
     const q1Answer = document.querySelector('input[name="level2-q1"]:checked');
     const q2Answer = document.querySelector('input[name="level2-q2"]:checked');
-    const q3Answer = document.getElementById('level2-q3-answer').value;
-    const q4Answer1 = document.getElementById('level2-q4-answer1').value;
-    const q4Answer2 = document.getElementById('level2-q4-answer2').value;
+    const q3Answer = document.getElementById('level2-q3-answer');
+    const q4Answer1 = document.getElementById('level2-q4-answer1');
+    const q4Answer2 = document.getElementById('level2-q4-answer2');
     const q5Answer = document.querySelector('input[name="level2-q5"]:checked');
-
-    // 检查是否完成所有题目
-    if (!q1Answer || !q2Answer || !q3Answer || !q4Answer1 || !q4Answer2 || !q5Answer) {
-        alert('请完成所有题目后再提交！');
-        return;
-    }
 
     // 定义正确答案
     const answers = [
@@ -896,12 +935,14 @@ function showLevel2TestResultFromAnswerExplanation() {
     if (isCorrect2) correctCount++;
 
     // 问题3
-    const userAnswer3 = q3Answer.trim();
+    const userAnswer3 = q3Answer ? q3Answer.value.trim() : '';
     const isCorrect3 = userAnswer3 === answers[2].answer;
     if (isCorrect3) correctCount++;
 
     // 问题4
-    const isCorrect4 = q4Answer1 === answers[3].answer1 && q4Answer2 === answers[3].answer2;
+    const q4Answer1Value = q4Answer1 ? q4Answer1.value : '';
+    const q4Answer2Value = q4Answer2 ? q4Answer2.value : '';
+    const isCorrect4 = q4Answer1Value === answers[3].answer1 && q4Answer2Value === answers[3].answer2;
     if (isCorrect4) correctCount++;
 
     // 问题5
@@ -946,7 +987,7 @@ function showLevel2TestResultFromAnswerExplanation() {
     resultHTML += `
         <div class="test-result-item ${isCorrect4 ? 'correct' : 'incorrect'}">
             <p><strong>问题4：</strong>${isCorrect4 ? '✅ 正确' : '❌ 错误'}</p>
-            <p><strong>你的答案：</strong>${q4Answer1 || '未作答'}，${q4Answer2 || '未作答'}</p>
+            <p><strong>你的答案：</strong>${q4Answer1Value || '未作答'}，${q4Answer2Value || '未作答'}</p>
             <p><strong>正确答案：</strong>${answers[3].answer1}，${answers[3].answer2}</p>
         </div>
     `;

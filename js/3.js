@@ -95,6 +95,23 @@ function closeLevel3Page() {
 function showLevel3LearningCenter() {
     document.getElementById('level3Page').style.display = 'none';
     document.getElementById('level3LearningCenterPage').style.display = 'block';
+
+    // 确保导航栏定位在“先导”上
+    const navItems = document.querySelectorAll('#level3LearningCenterPage .nav-item');
+    navItems.forEach(item => item.classList.remove('active'));
+
+    const guideNavItem = document.querySelector('#level3LearningCenterPage .nav-item[onclick*="guide"]');
+    if (guideNavItem) {
+        guideNavItem.classList.add('active');
+    }
+
+    const tabContents = document.querySelectorAll('#level3LearningCenterPage .tab-content');
+    tabContents.forEach(content => content.style.display = 'none');
+
+    const guideContent = document.getElementById('level3-guide-content');
+    if (guideContent) {
+        guideContent.style.display = 'block';
+    }
 }
 
 /**
@@ -132,6 +149,23 @@ function switchLevel3LearningTab(tab, tabId) {
 function openLevel3PracticePage() {
     document.getElementById('level3Page').style.display = 'none';
     document.getElementById('level3PracticePage').style.display = 'block';
+
+    // 确保导航栏定位在“选择”上
+    const navItems = document.querySelectorAll('#level3PracticePage .practice-nav-item');
+    navItems.forEach(item => item.classList.remove('active'));
+
+    const choiceNavItem = document.querySelector('#level3PracticePage .practice-nav-item[onclick*="choice"]');
+    if (choiceNavItem) {
+        choiceNavItem.classList.add('active');
+    }
+
+    const tabContents = document.querySelectorAll('#level3PracticePage .practice-tab-content');
+    tabContents.forEach(content => content.style.display = 'none');
+
+    const choiceContent = document.getElementById('level3-choice-content');
+    if (choiceContent) {
+        choiceContent.style.display = 'block';
+    }
 }
 
 /**
@@ -295,46 +329,28 @@ function submitLevel3Practice() {
     }
 
     let totalScore = choiceFillScore;
-    resultHTML += `<div class="test-score"><h4>总分：${totalScore}分</h4></div></div>`;
-
-    showLevel3PracticeResult(resultHTML);
-}
-
-/**
- * 显示第三关实战演练结果
- * @param {string} resultHTML - 结果HTML
- */
-function showLevel3PracticeResult(resultHTML) {
-    // 创建结果弹窗
-    const resultModal = document.createElement('div');
-    resultModal.className = 'practice-result-modal';
-    resultModal.innerHTML = `
-        <div class="practice-result-content">
-            <div class="practice-result-header">
-                <h3>答题结果</h3>
-            </div>
-            <div class="practice-result-body">
-                ${resultHTML}
-            </div>
-            <div class="practice-result-footer">
-                <button class="practice-result-button" onclick="showLevel3PracticeAnswerExplanation()">答案解析</button>
-                <button class="practice-result-button" onclick="redoLevel3Practice()">返回重做</button>
-            </div>
+    resultHTML += `
+        <div class="test-score"><h4>总分：${totalScore}分</h4></div>
+        
+        <div class="test-result-buttons">
+            <button class="test-result-button" onclick="showLevel3PracticeAnswerExplanation()">答案解析</button>
+            <button class="test-result-button" onclick="redoLevel3Practice()">返回重做</button>
         </div>
-    `;
+    </div>`;
 
-    document.body.appendChild(resultModal);
+    // 显示结果
+    const practiceContent = document.querySelector('#level3PracticePage .practice-content');
+    if (practiceContent) {
+        practiceContent.innerHTML = resultHTML;
+    }
 }
+
+
 
 /**
  * 显示第三关答案解析
  */
 function showLevel3PracticeAnswerExplanation() {
-    const resultModal = document.querySelector('.practice-result-modal');
-    if (resultModal) {
-        resultModal.remove();
-    }
-
     const explanations = [
         {
             question: '【平衡力与相互作用力判断】杯子静止在水平桌面上。下列说法正确的是（　　）',
@@ -362,7 +378,13 @@ function showLevel3PracticeAnswerExplanation() {
         }
     ];
 
-    let explanationHTML = '<div class="test-result">';
+    let explanationHTML = `
+        <div class="test-result">
+            <div class="test-result-header">
+                <button class="test-result-back-button" onclick="showLevel3PracticeResultFromExplanation()">返回</button>
+                <h3>答案解析</h3>
+            </div>
+    `;
     explanations.forEach((item, index) => {
         explanationHTML += `
             <div class="test-result-item">
@@ -371,41 +393,33 @@ function showLevel3PracticeAnswerExplanation() {
             </div>
         `;
     });
-    explanationHTML += '</div>';
-
-    const explanationModal = document.createElement('div');
-    explanationModal.className = 'practice-result-modal';
-    explanationModal.innerHTML = `
-        <div class="practice-result-content">
-            <div class="practice-result-header">
-                <button class="test-result-back-button" onclick="showLevel3PracticeResultFromExplanation()">返回</button>
-                <h3>答案解析</h3>
-            </div>
-            <div class="practice-result-body">
-                ${explanationHTML}
-            </div>
-            <div class="practice-result-footer">
-                <button class="practice-result-button" onclick="redoLevel3Practice()">返回重做</button>
+    explanationHTML += `
+            <div class="test-result-buttons" style="justify-content: center;">
+                <button class="test-result-button" onclick="redoLevel3Practice()">返回重做</button>
             </div>
         </div>
     `;
-    document.body.appendChild(explanationModal);
+
+    // 显示解析
+    const practiceContent = document.querySelector('#level3PracticePage .practice-content');
+    if (practiceContent) {
+        practiceContent.innerHTML = explanationHTML;
+    }
 }
 
 /**
  * 从实战演练答案解析返回答题结果
  */
 function showLevel3PracticeResultFromExplanation() {
-    // 关闭当前解析弹窗
-    const explanationModal = document.querySelector('.practice-result-modal');
-    if (explanationModal) {
-        explanationModal.remove();
-    }
-
     let correctCount = 0;
     let totalQuestions = 0;
     let choiceFillScore = 0;
-    let resultHTML = '<div class="test-result"><h3>答题结果</h3>';
+    let resultHTML = `
+        <div class="test-result">
+            <div class="test-result-header">
+                <h3>答题结果</h3>
+            </div>
+    `;
 
     const PRACTICE_CHOICE_COUNT = 3;
     const PRACTICE_FILL_COUNT = 3;
@@ -490,37 +504,45 @@ function showLevel3PracticeResultFromExplanation() {
     }
 
     let totalScore = choiceFillScore;
-    resultHTML += `<div class="test-score"><h4>总分：${totalScore}分</h4></div></div>`;
+    resultHTML += `
+        <div class="test-score"><h4>总分：${totalScore}分</h4></div>
+        
+        <div class="test-result-buttons">
+            <button class="test-result-button" onclick="showLevel3PracticeAnswerExplanation()">答案解析</button>
+            <button class="test-result-button" onclick="redoLevel3Practice()">返回重做</button>
+        </div>
+    </div>`;
 
     // 显示结果
-    const resultModal = document.createElement('div');
-    resultModal.className = 'practice-result-modal';
-    resultModal.innerHTML = `
-        <div class="practice-result-content">
-            <div class="practice-result-header">
-                <h3>答题结果</h3>
-            </div>
-            <div class="practice-result-body">
-                ${resultHTML}
-            </div>
-            <div class="practice-result-footer">
-                <button class="practice-result-button" onclick="showLevel3PracticeAnswerExplanation()">答案解析</button>
-                <button class="practice-result-button" onclick="redoLevel3Practice()">返回重做</button>
-            </div>
-        </div>
-    `;
-
-    document.body.appendChild(resultModal);
+    const practiceContent = document.querySelector('#level3PracticePage .practice-content');
+    if (practiceContent) {
+        practiceContent.innerHTML = resultHTML;
+    }
 }
 
 /**
  * 重新做第三关实战演练
  */
 function redoLevel3Practice() {
-    // 关闭当前弹窗
-    const resultModal = document.querySelector('.practice-result-modal');
-    if (resultModal) {
-        resultModal.remove();
+    // 重置存储的答案
+    currentLevel3Answers = null;
+    currentLevel3ChoiceFillScore = 0;
+
+    // 确保导航栏定位在"选择"上
+    const navItems = document.querySelectorAll('#level3PracticePage .practice-nav-item');
+    navItems.forEach(item => item.classList.remove('active'));
+
+    const choiceNavItem = document.querySelector('#level3PracticePage .practice-nav-item[onclick*="choice"]');
+    if (choiceNavItem) {
+        choiceNavItem.classList.add('active');
+    }
+
+    const tabContents = document.querySelectorAll('#level3PracticePage .practice-tab-content');
+    tabContents.forEach(content => content.style.display = 'none');
+
+    const choiceContent = document.getElementById('level3-choice-content');
+    if (choiceContent) {
+        choiceContent.style.display = 'block';
     }
 
     // 重置所有问题
@@ -701,12 +723,6 @@ function showLevel3TestResultFromAnswerExplanation() {
     const q1Answer = document.querySelector('input[name="level3-q1"]:checked');
     const q2Answer = document.querySelector('input[name="level3-q2"]:checked');
     const q3Answer = document.querySelector('input[name="level3-q3"]:checked');
-
-    // 检查是否完成所有题目
-    if (!q1Answer || !q2Answer || !q3Answer) {
-        alert('请完成所有题目后再提交！');
-        return;
-    }
 
     // 定义正确答案
     const answers = [
