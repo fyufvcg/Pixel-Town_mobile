@@ -261,9 +261,11 @@ function removeImage(questionNum) {
   if (questionNum === 1) {
     applicationQuestionImages.question1 = null;
     document.getElementById('uploaded-images-1').innerHTML = '';
+    document.getElementById('file-input-1').value = '';
   } else if (questionNum === 2) {
     applicationQuestionImages.question2 = null;
     document.getElementById('uploaded-images-2').innerHTML = '';
+    document.getElementById('file-input-2').value = '';
   }
 }
 
@@ -696,6 +698,16 @@ function showPracticeExplanations() {
   explanationHTML += `
         <div class="test-result-item">
             <p><strong>应用题1：</strong>物体 A 质量为 4 kg，放在倾角为 30° 的斜面上，A 与斜面间的动摩擦因数为 0.5。用平行于斜面的力 F 向上拉 A，使 A 沿斜面匀速上升。求力 F 的大小。（g 取 10 m/s²）</p>
+            <img src="images/test/第一关/第一关应用题1.png" alt="斜面拉力示意图" style="max-width: 40%; height: auto; margin: 10px 0;">
+            <p><strong>答案：</strong>F = 34.6N（或 20√3 N）</p>
+            <p><strong>解析：</strong>物体匀速上升，受力平衡。对物体进行受力分析：重力mg=4×10=40N，垂直斜面方向N=mgcos30°=40×√3/2=20√3N，沿斜面方向F=mgsin30°+f=40×0.5+μN=20+0.5×20√3=20+10√3≈34.6N。</p>
+        </div>
+        
+        <div class="test-result-item">
+            <p><strong>应用题2：</strong>一根弹簧原长 15 cm，劲度系数为 200 N/m。现将弹簧一端固定，另一端挂一质量为 2 kg 的物体，静止时弹簧长度为多少？若将物体取下，用手将弹簧压缩至 12 cm，则手对弹簧的弹力大小为多少？</p>
+            <img src="images/test/第一关/第一关应用题2.png" alt="弹簧长度和弹力示意图" style="max-width: 40%; height: auto; margin: 10px 0;">
+            <p><strong>答案：</strong>静止时弹簧长度为 16 cm；手对弹簧的弹力大小为 6 N</p>
+            <p><strong>解析：</strong>（1）挂物体静止时：弹簧弹力F=mg=2×10=20N，由胡克定律F=kx，伸长量x=F/k=20/200=0.1m=10cm，弹簧长度l=l₀+x=15+10=25cm。注意：原长15cm，伸长10cm，总长应为25cm。<br>（2）压缩至12cm时：压缩量x'=l₀-l=15-12=3cm=0.03m，弹力F'=kx'=200×0.03=6N。</p>
         </div>
     `;
 
@@ -837,6 +849,24 @@ function redoPractice() {
             <input type="file" id="file-input-1" class="file-input" accept="image/*"
               onchange="handleImageUpload1(this)" style="display: none;">
             <div class="uploaded-images" id="uploaded-images-1"></div>
+          </div>
+        </div>
+
+        <div class="practice-question">
+          <p><strong>问题2：</strong>一根弹簧原长 15 cm，劲度系数为 200 N/m。现将弹簧一端固定，另一端挂一质量为 2 kg
+            的物体，静止时弹簧长度为多少？若将物体取下，用手将弹簧压缩至 12 cm，则手对弹簧的弹力大小为多少？</p>
+          <img src="images/test/第一关/第一关应用题2.png" alt="弹簧长度和弹力示意图"
+            style="max-width: 40%; height: auto; margin: 10px 0;">
+          <div class="image-upload-container">
+            <div class="upload-area" id="upload-area-2"
+              onclick="document.getElementById('file-input-2').click()">
+              <div class="upload-icon">📷</div>
+              <div class="upload-text">点击或拖拽上传图片</div>
+              <div class="upload-hint">支持 JPG、PNG 格式</div>
+            </div>
+            <input type="file" id="file-input-2" class="file-input" accept="image/*"
+              onchange="handleImageUpload2(this)" style="display: none;">
+            <div class="uploaded-images" id="uploaded-images-2"></div>
           </div>
         </div>
 

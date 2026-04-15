@@ -619,12 +619,12 @@ function handleLevel4ImageUpload1(input) {
     if (input.files && input.files[0]) {
         const reader = new FileReader();
         reader.onload = function (e) {
-            const img = document.createElement('img');
-            img.src = e.target.result;
-            img.className = 'uploaded-image';
-            img.style.maxWidth = '200px';
-            img.style.maxHeight = '200px';
-            uploadedImages.appendChild(img);
+            uploadedImages.innerHTML = `
+                <div class="uploaded-image">
+                    <img src="${e.target.result}" alt="上传的图片" style="max-width: 200px; max-height: 200px; border-radius: 8px;">
+                    <button class="remove-image" onclick="removeLevel4Image(1)">×</button>
+                </div>
+            `;
         };
         reader.readAsDataURL(input.files[0]);
     }
@@ -638,14 +638,24 @@ function handleLevel4ImageUpload2(input) {
     if (input.files && input.files[0]) {
         const reader = new FileReader();
         reader.onload = function (e) {
-            const img = document.createElement('img');
-            img.src = e.target.result;
-            img.className = 'uploaded-image';
-            img.style.maxWidth = '200px';
-            img.style.maxHeight = '200px';
-            uploadedImages.appendChild(img);
+            uploadedImages.innerHTML = `
+                <div class="uploaded-image">
+                    <img src="${e.target.result}" alt="上传的图片" style="max-width: 200px; max-height: 200px; border-radius: 8px;">
+                    <button class="remove-image" onclick="removeLevel4Image(2)">×</button>
+                </div>
+            `;
         };
         reader.readAsDataURL(input.files[0]);
+    }
+}
+
+function removeLevel4Image(questionNum) {
+    if (questionNum === 1) {
+        document.getElementById('level4-uploaded-images-1').innerHTML = '';
+        document.getElementById('level4-file-input-1').value = '';
+    } else if (questionNum === 2) {
+        document.getElementById('level4-uploaded-images-2').innerHTML = '';
+        document.getElementById('level4-file-input-2').value = '';
     }
 }
 

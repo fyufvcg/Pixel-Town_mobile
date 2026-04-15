@@ -209,7 +209,12 @@ function handleLevel3ImageUpload1(input) {
             const imageUrl = e.target.result;
             const uploadedImages = document.getElementById('level3-uploaded-images-1');
             if (uploadedImages) {
-                uploadedImages.innerHTML = `<img src="${imageUrl}" alt="上传的图片" style="max-width: 100%; height: auto; margin: 10px 0; border-radius: 8px;">`;
+                uploadedImages.innerHTML = `
+                    <div class="uploaded-image">
+                        <img src="${imageUrl}" alt="上传的图片" style="max-width: 100%; height: auto; margin: 10px 0; border-radius: 8px;">
+                        <button class="remove-image" onclick="removeLevel3Image(1)">×</button>
+                    </div>
+                `;
             }
         };
         reader.readAsDataURL(file);
@@ -224,10 +229,25 @@ function handleLevel3ImageUpload2(input) {
             const imageUrl = e.target.result;
             const uploadedImages = document.getElementById('level3-uploaded-images-2');
             if (uploadedImages) {
-                uploadedImages.innerHTML = `<img src="${imageUrl}" alt="上传的图片" style="max-width: 100%; height: auto; margin: 10px 0; border-radius: 8px;">`;
+                uploadedImages.innerHTML = `
+                    <div class="uploaded-image">
+                        <img src="${imageUrl}" alt="上传的图片" style="max-width: 100%; height: auto; margin: 10px 0; border-radius: 8px;">
+                        <button class="remove-image" onclick="removeLevel3Image(2)">×</button>
+                    </div>
+                `;
             }
         };
         reader.readAsDataURL(file);
+    }
+}
+
+function removeLevel3Image(questionNum) {
+    if (questionNum === 1) {
+        document.getElementById('level3-uploaded-images-1').innerHTML = '';
+        document.getElementById('level3-file-input-1').value = '';
+    } else if (questionNum === 2) {
+        document.getElementById('level3-uploaded-images-2').innerHTML = '';
+        document.getElementById('level3-file-input-2').value = '';
     }
 }
 
