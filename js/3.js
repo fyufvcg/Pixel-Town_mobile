@@ -256,15 +256,21 @@ function submitLevel3Practice() {
     ];
 
     for (let i = 1; i <= PRACTICE_CHOICE_COUNT; i++) {
-        const radio = document.querySelector(`input[name="level3-test-q${i}"]:checked`);
-        const userAnswer = radio ? radio.value : '';
+        const checkboxes = document.querySelectorAll(`input[name="level3-test-q${i}"]:checked`);
+        // 获取所有选中的选项值，按字母顺序排序后连接成字符串
+        const userAnswers = Array.from(checkboxes).map(cb => cb.value).sort().join('');
         const correctAnswer = practiceAnswers[i - 1].correct;
         let isCorrect = false;
 
-        if (correctAnswer.length > 1) {
-            isCorrect = correctAnswer.includes(userAnswer);
+        // 用户未作答时，直接判断为错误
+        if (userAnswers === '') {
+            isCorrect = false;
+        } else if (correctAnswer.length > 1) {
+            // 多选题：需要所有正确选项都被选中
+            isCorrect = userAnswers === correctAnswer;
         } else {
-            isCorrect = userAnswer === correctAnswer;
+            // 单选题：只有一个正确选项
+            isCorrect = userAnswers === correctAnswer;
         }
 
         totalQuestions++;
@@ -278,7 +284,7 @@ function submitLevel3Practice() {
         resultHTML += `
             <div class="test-result-item ${isCorrect ? 'correct' : 'incorrect'}">
                 <p><strong>选择题${i}：</strong> ${isCorrect ? '✅ 正确' : '❌ 错误'}</p>
-                <p>你的答案：${userAnswer || '未作答'}</p>
+                <p>你的答案：${userAnswers || '未作答'}</p>
                 <p>正确答案：${correctAnswer.toUpperCase()}</p>
             </div>
         `;
@@ -537,16 +543,103 @@ function redoLevel3Practice() {
         choiceNavItem.classList.add('active');
     }
 
-    const tabContents = document.querySelectorAll('#level3PracticePage .practice-tab-content');
-    tabContents.forEach(content => content.style.display = 'none');
+    // 重新加载实战演练页面的原始内容
+    const practiceContent = document.querySelector('#level3PracticePage .practice-content');
+    if (practiceContent) {
+        // 重新加载原始的标签页结构
+        practiceContent.innerHTML = `
+            <!-- 选择题内容 -->
+            <div id="level3-choice-content" class="practice-tab-content active">
+                <h3>选择题</h3>
+                <p>请完成以下选择题。</p>
+                <div class="practice-question">
+                    <p><strong>问题1：</strong>【平衡力与相互作用力判断】杯子静止在水平桌面上。下列说法正确的是（　　）</p>
+                    <div class="practice-options">
+                        <label><input type="radio" name="level3-test-q1" value="a"> A. 杯子对桌面的压力与桌面对杯子的支持力是一对平衡力</label>
+                        <label><input type="radio" name="level3-test-q1" value="b"> B. 杯子对桌面的压力与杯子的重力是一对平衡力</label>
+                        <label><input type="radio" name="level3-test-q1" value="c"> C. 桌面对杯子的支持力与杯子的重力是一对平衡力</label>
+                        <label><input type="radio" name="level3-test-q1" value="d"> D. 桌面对杯子的支持力与杯子对桌面的压力是一对相互作用力</label>
+                    </div>
+                </div>
 
-    const choiceContent = document.getElementById('level3-choice-content');
-    if (choiceContent) {
-        choiceContent.style.display = 'block';
+                <div class="practice-question">
+                    <p><strong>问题2：</strong>【叠加体、摩擦力、相互作用力】物体A、B叠放在水平地面上，用水平力F拉A，使A、B一起匀速运动。下列说法正确的是（　　）</p>
+                    <div class="practice-options">
+                        <label><input type="radio" name="level3-test-q2" value="a"> A. A对B的摩擦力与B对A的摩擦力是一对平衡力</label>
+                        <label><input type="radio" name="level3-test-q2" value="b"> B. B对地面的摩擦力与地面对B的摩擦力是一对相互作用力</label>
+                        <label><input type="radio" name="level3-test-q2" value="c"> C. 地面对B的支持力与B的重力是一对平衡力</label>
+                        <label><input type="radio" name="level3-test-q2" value="d"> D. A对B的压力与B对A的支持力是一对相互作用力</label>
+                    </div>
+                </div>
+
+                <div class="practice-question">
+                    <p><strong>问题3：</strong>【牛顿第三定律应用】关于牛顿第三定律，下列说法正确的是（　　）</p>
+                    <div class="practice-options">
+                        <label><input type="radio" name="level3-test-q3" value="a"> A. 火箭升空时，喷出的气体对火箭的推力与火箭对气体的推力是一对平衡力</label>
+                        <label><input type="radio" name="level3-test-q3" value="b"> B. 鸡蛋碰石头，鸡蛋碎了，说明石头对鸡蛋的作用力大于鸡蛋对石头的作用力</label>
+                        <label><input type="radio" name="level3-test-q3" value="c"> C. 人走路时，地对脚的力与脚蹬地的力是一对相互作用力</label>
+                        <label><input type="radio" name="level3-test-q3" value="d"> D. 作用力与反作用力可以是不同性质的力</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 填空题内容 -->
+            <div id="level3-fill-content" class="practice-tab-content" style="display: none;">
+                <h3>填空题</h3>
+                <p>请完成以下填空题。</p>
+                <div class="practice-question">
+                    <p><strong>问题1：</strong>【作用力与反作用力特征】作用力与反作用力的四个特征：______、______、______、______。</p>
+                    <input type="text" class="practice-input" placeholder="请输入答案，如：等值;反向;共线;同性质" id="level3-fill-q1">
+                </div>
+
+                <div class="practice-question">
+                    <p><strong>问题2：</strong>【磁铁吸附、平衡力判断】磁铁吸附在竖直白板上静止。磁铁受到白板的吸引力与白板受到磁铁的压力是 ______ 力；磁铁受到的重力与白板对磁铁的 ______ 力是一对平衡力。</p>
+                    <input type="text" class="practice-input" placeholder="请输入答案，如：作用力与反作用;摩擦" id="level3-fill-q2">
+                </div>
+
+                <div class="practice-question">
+                    <p><strong>问题3：</strong>【超重现象、相互作用力】电梯加速上升时，人对电梯地板的压力 ______ 人的重力，这种现象称为 ______。此时，人对电梯地板的压力与电梯地板对人的支持力是一对 ______ 力。</p>
+                    <input type="text" class="practice-input" placeholder="请输入答案，如：大于;超重;作用力与反作用" id="level3-fill-q3">
+                </div>
+            </div>
+
+            <!-- 应用题内容 -->
+            <div id="level3-application-content" class="practice-tab-content" style="display: none;">
+                <h3>应用题</h3>
+                <p>请完成以下应用题，上传解题过程图片。</p>
+                <div class="practice-question">
+                    <p><strong>问题1：</strong>【牛顿第三定律应用】质量为m=2kg的物体A放在水平地面上，用水平力F=10N推物体A，使A匀速运动。求：<br>（1）物体A受到的摩擦力大小；<br>（2）物体A对地面的压力大小；<br>（3）地面对物体A的支持力大小。（g=10m/s²）</p>
+                    <div class="image-upload-container">
+                        <div class="upload-area" id="level3-upload-area-1" onclick="document.getElementById('level3-file-input-1').click()">
+                            <div class="upload-icon">📷</div>
+                            <div class="upload-text">点击或拖拽上传图片</div>
+                            <div class="upload-hint">支持 JPG、PNG 格式</div>
+                        </div>
+                        <input type="file" id="level3-file-input-1" class="file-input" accept="image/*" onchange="handleLevel3ImageUpload1(this)" style="display: none;">
+                        <div class="uploaded-images" id="level3-uploaded-images-1"></div>
+                    </div>
+                </div>
+
+                <div class="practice-question">
+                    <p><strong>问题2：</strong>【受力分析与牛顿第三定律】质量为m=3kg的物体B放在倾角θ=30°的斜面上，物体B与斜面间的动摩擦因数μ=0.2。用平行于斜面向上的力F拉物体B，使物体B沿斜面匀速上升。求：<br>（1）物体B受到的摩擦力大小；<br>（2）力F的大小；<br>（3）物体B对斜面的压力大小。（g=10m/s²，sin30°=0.5，cos30°=√3/2）</p>
+                    <div class="image-upload-container">
+                        <div class="upload-area" id="level3-upload-area-2" onclick="document.getElementById('level3-file-input-2').click()">
+                            <div class="upload-icon">📷</div>
+                            <div class="upload-text">点击或拖拽上传图片</div>
+                            <div class="upload-hint">支持 JPG、PNG 格式</div>
+                        </div>
+                        <input type="file" id="level3-file-input-2" class="file-input" accept="image/*" onchange="handleLevel3ImageUpload2(this)" style="display: none;">
+                        <div class="uploaded-images" id="level3-uploaded-images-2"></div>
+                    </div>
+                </div>
+
+                <!-- 提交答案按钮 -->
+                <div class="practice-footer">
+                    <button class="practice-submit" onclick="submitLevel3Practice()">提交答案</button>
+                </div>
+            </div>
+        `;
     }
-
-    // 重置所有问题
-    resetLevel3PracticeForm();
 
     // 确保实战演练页面显示
     document.getElementById('level3PracticePage').style.display = 'block';

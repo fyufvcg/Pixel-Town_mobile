@@ -37,6 +37,68 @@ function startQuiz() {
   // 显示小测页面
   document.getElementById('mainPage').style.display = 'none';
   document.getElementById('quizPage').style.display = 'block';
+  
+  // 检查是否存在已完成的测试
+  if (currentQuizAnswers) {
+    // 直接显示答题结果
+    const correctAnswers = {
+      choice: {
+        q1: 'c', // 同一个物体在地球表面不同位置，所受重力大小不一定相同
+        q2: 'c', // 100N/m
+        q3: 'c', // 静摩擦力的方向总是与物体运动趋势的方向相反
+        q4: 'b', // 若小球在空中处于静止状态，小球受到的摩擦力与重力大小相等
+        q5: 'a', // 当传送带加速向上运动时，f的方向一定沿传送带向上
+        q6: 'a', // F1=F2
+        q7: 'c', // 重力减小，重心位置没有变
+        q8: 'a', // L'=L，弹簧仍竖直
+        q9: 'b', // μF
+        q10: 'd', // 轻杆的弹力方向总是沿杆方向，但可以沿杆向外
+        q11: 'a', // 由公式μ=Ff/FN可知，动摩擦因数是两个力的比值，没有单位
+        q12: 'd', // 当将四块砖一起竖直向上加速提起时，砖块2对砖块3的摩擦力为零
+        q13: 'd', // 行李箱所受的重力和地面对行李箱的支持力是一对平衡力
+        q14: 'c', // 撑杆起跳上升阶段，弯曲的撑杆对人的作用力大小等于人对撑杆的作用力大小
+        q15: 'b'  // 球拍对乒乓球的作用力与乒乓球对球拍的作用力大小相等
+      },
+      fill: {
+        q1: ['400', '1000'], // 弹力F=400N，劲度系数k=1000N/m
+        q2: ['10', '400'], // 原长10cm，劲度系数400N/m
+        q3: ['4.0', '等值反向', '4.0'] // B弹簧秤读数4.0N，F和F'关系，手对A的拉力4.0N
+      }
+    };
+    
+    showQuizResults(currentQuizAnswers.choiceAnswers, currentQuizAnswers.fillAnswers, currentQuizAnswers.appAnswers, correctAnswers);
+  } else {
+    // 加载小测内容
+    loadQuizContent();
+    
+    // 确保导航栏的"选择"选项为激活状态
+    const navItems = document.querySelectorAll('#quizPage .quiz-nav-item');
+    navItems.forEach(item => item.classList.remove('active'));
+    
+    const choiceNavItem = document.querySelector('#quizPage .quiz-nav-item[onclick*="choice"]');
+    if (choiceNavItem) {
+      choiceNavItem.classList.add('active');
+    }
+    
+    // 确保显示选择题页面
+    const tabContents = document.querySelectorAll('#quizPage .quiz-tab-content');
+    tabContents.forEach(content => {
+      content.classList.remove('active');
+      content.style.display = 'none';
+    });
+    
+    const choiceContent = document.getElementById('quiz-choice-content');
+    if (choiceContent) {
+      choiceContent.classList.add('active');
+      choiceContent.style.display = 'block';
+    }
+    
+    // 控制提交按钮的显示/隐藏，只有在应用题标签页时显示
+    const quizFooter = document.querySelector('#quizPage .quiz-footer');
+    if (quizFooter) {
+      quizFooter.style.display = 'none';
+    }
+  }
 }
 
 // 关闭小测前导说明页面
@@ -883,9 +945,9 @@ function submitQuiz() {
       q15: 'b'  // 球拍对乒乓球的作用力与乒乓球对球拍的作用力大小相等
     },
     fill: {
-      q1: ['8', '20'], // 弹力F=8N，劲度系数k=20N/m
-      q2: ['10', '100'], // 原长10cm，劲度系数100N/m
-      q3: ['2.0', '大小相等方向相反', '2.0'] // B弹簧秤读数2.0N，F和F'关系，手对A的拉力2.0N
+      q1: ['400', '1000'], // 弹力F=400N，劲度系数k=1000N/m
+      q2: ['10', '400'], // 原长10cm，劲度系数400N/m
+      q3: ['4.0', '等值反向', '4.0'] // B弹簧秤读数4.0N，F和F'关系，手对A的拉力4.0N
     }
   };
 

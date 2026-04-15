@@ -525,16 +525,103 @@ function redoLevel2Practice() {
         choiceNavItem.classList.add('active');
     }
 
-    const tabContents = document.querySelectorAll('#level2PracticePage .practice-tab-content');
-    tabContents.forEach(content => content.style.display = 'none');
+    // 重新加载实战演练页面的原始内容
+    const practiceContent = document.querySelector('#level2PracticePage .practice-content');
+    if (practiceContent) {
+        // 重新加载原始的标签页结构
+        practiceContent.innerHTML = `
+            <!-- 选择题内容 -->
+            <div id="level2-choice-content" class="practice-tab-content active">
+                <h3>选择题</h3>
+                <p>请完成以下选择题。</p>
+                <div class="practice-question">
+                    <p><strong>问题1：</strong>【静摩擦力方向判断】物体A、B叠放在水平地面上，A受水平向右的拉力F作用，A、B均保持静止。则A对B的摩擦力方向为（　　）</p>
+                    <div class="practice-options">
+                        <label><input type="radio" name="level2-test-q1" value="a"> A. 水平向右</label>
+                        <label><input type="radio" name="level2-test-q1" value="b"> B. 水平向左</label>
+                        <label><input type="radio" name="level2-test-q1" value="c"> C. 竖直向上</label>
+                        <label><input type="radio" name="level2-test-q1" value="d"> D. 竖直向下</label>
+                    </div>
+                </div>
 
-    const choiceContent = document.getElementById('level2-choice-content');
-    if (choiceContent) {
-        choiceContent.style.display = 'block';
+                <div class="practice-question">
+                    <p><strong>问题2：</strong>【摩擦力大小比较】三个相同的木块A、B、C叠放在水平地面上，用水平力F拉B，使三者一起匀速运动。设A与B、B与C、C与地面间的摩擦力大小分别为f₁、f₂、f₃，则（　　）</p>
+                    <div class="practice-options">
+                        <label><input type="radio" name="level2-test-q2" value="a"> A. f₁=0，f₂=F，f₃=F</label>
+                        <label><input type="radio" name="level2-test-q2" value="b"> B. f₁=F，f₂=F，f₃=F</label>
+                        <label><input type="radio" name="level2-test-q2" value="c"> C. f₁=0，f₂=F，f₃=2F</label>
+                        <label><input type="radio" name="level2-test-q2" value="d"> D. f₁=F，f₂=2F，f₃=3F</label>
+                    </div>
+                </div>
+
+                <div class="practice-question">
+                    <p><strong>问题3：</strong>【摩擦力突变问题】一木块放在水平桌面上，用水平力F拉木块，当F从零开始逐渐增大时，木块所受的摩擦力（　　）</p>
+                    <div class="practice-options">
+                        <label><input type="radio" name="level2-test-q3" value="a"> A. 一直增大</label>
+                        <label><input type="radio" name="level2-test-q3" value="b"> B. 先增大后保持不变</label>
+                        <label><input type="radio" name="level2-test-q3" value="c"> C. 一直保持不变</label>
+                        <label><input type="radio" name="level2-test-q3" value="d"> D. 先保持不变后增大</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 填空题内容 -->
+            <div id="level2-fill-content" class="practice-tab-content" style="display: none;">
+                <h3>填空题</h3>
+                <p>请完成以下填空题。</p>
+                <div class="practice-question">
+                    <p><strong>问题1：</strong>【滑动摩擦力公式】滑动摩擦力的大小公式为 ______，其中μ称为 ______，其大小与接触面的材料和粗糙程度有关。</p>
+                    <input type="text" class="practice-input" placeholder="请输入答案，如：f=μN" id="level2-fill-q1">
+                </div>
+
+                <div class="practice-question">
+                    <p><strong>问题2：</strong>【静摩擦力计算】质量为2 kg的物体静止在倾角为30°的斜面上，物体与斜面间的静摩擦因数为0.6。则物体所受静摩擦力的大小为 ______ N，方向 ______。（g取10 m/s²）</p>
+                    <input type="text" class="practice-input" placeholder="请输入答案，如：10；沿斜面向上" id="level2-fill-q2">
+                </div>
+
+                <div class="practice-question">
+                    <p><strong>问题3：</strong>【摩擦力做功】一个物体在水平地面上滑动，滑动摩擦力对物体做 ______ 功，对地面做 ______ 功。（填"正"、"负"或"零"）</p>
+                    <input type="text" class="practice-input" placeholder="请输入答案，如：负；零" id="level2-fill-q3">
+                </div>
+            </div>
+
+            <!-- 应用题内容 -->
+            <div id="level2-application-content" class="practice-tab-content" style="display: none;">
+                <h3>应用题</h3>
+                <p>请完成以下应用题，上传解题过程图片。</p>
+                <div class="practice-question">
+                    <p><strong>问题1：</strong>【摩擦力综合应用】质量为m=5kg的物体放在水平地面上，物体与地面间的动摩擦因数μ=0.3。用水平力F=20N拉物体，求：<br>（1）物体受到的摩擦力大小；<br>（2）物体的加速度大小。（g=10m/s²）</p>
+                    <div class="image-upload-container">
+                        <div class="upload-area" id="level2-upload-area-1" onclick="document.getElementById('level2-file-input-1').click()">
+                            <div class="upload-icon">📷</div>
+                            <div class="upload-text">点击或拖拽上传图片</div>
+                            <div class="upload-hint">支持 JPG、PNG 格式</div>
+                        </div>
+                        <input type="file" id="level2-file-input-1" class="file-input" accept="image/*" onchange="handleLevel2ImageUpload1(this)" style="display: none;">
+                        <div class="uploaded-images" id="level2-uploaded-images-1"></div>
+                    </div>
+                </div>
+
+                <div class="practice-question">
+                    <p><strong>问题2：</strong>【斜面摩擦力】质量为m=4kg的物体放在倾角θ=37°的斜面上，物体与斜面间的动摩擦因数μ=0.25。用平行于斜面向上的力F拉物体，使物体沿斜面匀速上升。求力F的大小。（g=10m/s²，sin37°=0.6，cos37°=0.8）</p>
+                    <div class="image-upload-container">
+                        <div class="upload-area" id="level2-upload-area-2" onclick="document.getElementById('level2-file-input-2').click()">
+                            <div class="upload-icon">📷</div>
+                            <div class="upload-text">点击或拖拽上传图片</div>
+                            <div class="upload-hint">支持 JPG、PNG 格式</div>
+                        </div>
+                        <input type="file" id="level2-file-input-2" class="file-input" accept="image/*" onchange="handleLevel2ImageUpload2(this)" style="display: none;">
+                        <div class="uploaded-images" id="level2-uploaded-images-2"></div>
+                    </div>
+                </div>
+
+                <!-- 提交答案按钮 -->
+                <div class="practice-footer">
+                    <button class="practice-submit" onclick="submitLevel2Practice()">提交答案</button>
+                </div>
+            </div>
+        `;
     }
-
-    // 重置所有问题
-    resetLevel2PracticeForm();
 
     // 确保实战演练页面显示
     document.getElementById('level2PracticePage').style.display = 'block';

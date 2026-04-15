@@ -3281,8 +3281,62 @@ function submitLevel2Test() {
 }
 
 
+// 存储第五关应用题图片
+let level6ApplicationQuestionImages = {
+    question1: null,
+    question2: null
+};
 
+/**
+ * 处理第五关应用题1图片上传
+ */
+function handleImageUpload1(input) {
+    const file = input.files[0];
+    if (!file) return;
 
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        const imageData = e.target.result;
+        level6ApplicationQuestionImages.question1 = imageData;
+
+        // 显示上传的图片
+        const uploadedImages = document.getElementById('uploaded-images-1');
+        uploadedImages.innerHTML = '<div class="uploaded-image"><img src="' + imageData + '" alt="上传的图片" style="max-width: 100%; height: auto;"><button class="remove-image" onclick="removeLevel6Image(1)">×</button></div>';
+    };
+    reader.readAsDataURL(file);
+}
+
+/**
+ * 处理第五关应用题2图片上传
+ */
+function handleImageUpload2(input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        const imageData = e.target.result;
+        level6ApplicationQuestionImages.question2 = imageData;
+
+        // 显示上传的图片
+        const uploadedImages = document.getElementById('uploaded-images-2');
+        uploadedImages.innerHTML = '<div class="uploaded-image"><img src="' + imageData + '" alt="上传的图片" style="max-width: 100%; height: auto;"><button class="remove-image" onclick="removeLevel6Image(2)">×</button></div>';
+    };
+    reader.readAsDataURL(file);
+}
+
+/**
+ * 移除第五关上传的图片
+ */
+function removeLevel6Image(questionNum) {
+    if (questionNum === 1) {
+        level6ApplicationQuestionImages.question1 = null;
+        document.getElementById('uploaded-images-1').innerHTML = '';
+    } else if (questionNum === 2) {
+        level6ApplicationQuestionImages.question2 = null;
+        document.getElementById('uploaded-images-2').innerHTML = '';
+    }
+}
 
 /**
  * 提交检测答案
@@ -3290,7 +3344,9 @@ function submitLevel2Test() {
 function submitLevel6Practice() {
     // 收集用户答案
     const practiceAnswers = {
-        choice1: document.querySelector('input[name="test-q1"]:checked')?.value,
+        // 第一题是多选题，获取所有选中的选项
+        choice1: Array.from(document.querySelectorAll('input[name="test-q1"]:checked')).map(cb => cb.value).sort().join(''),
+        // 第二题和第三题是单选题，只获取一个选中的选项
         choice2: document.querySelector('input[name="test-q2"]:checked')?.value,
         choice3: document.querySelector('input[name="test-q3"]:checked')?.value,
         fill1: document.getElementById('fill-q1')?.value,
@@ -3544,10 +3600,10 @@ function redoLevel6Practice() {
                 <div class="test-question">
                     <p><strong>问题1：</strong>（受力分析）一个物体静止在粗糙斜面上，关于物体的受力情况，下列说法正确的是（　　）</p>
                     <div class="test-options">
-                        <label><input type="radio" name="test-q1" value="a"> A. 物体受重力、支持力、摩擦力三个力</label>
-                        <label><input type="radio" name="test-q1" value="b"> B. 物体受重力、支持力、摩擦力、下滑力四个力</label>
-                        <label><input type="radio" name="test-q1" value="c"> C. 支持力和摩擦力的合力方向竖直向上</label>
-                        <label><input type="radio" name="test-q1" value="d"> D. 支持力和摩擦力的合力大小等于重力</label>
+                        <label><input type="checkbox" name="test-q1" value="a"> A. 物体受重力、支持力、摩擦力三个力</label>
+                        <label><input type="checkbox" name="test-q1" value="b"> B. 物体受重力、支持力、摩擦力、下滑力四个力</label>
+                        <label><input type="checkbox" name="test-q1" value="c"> C. 支持力和摩擦力的合力方向竖直向上</label>
+                        <label><input type="checkbox" name="test-q1" value="d"> D. 支持力和摩擦力的合力大小等于重力</label>
                     </div>
                 </div>
                 
@@ -3632,10 +3688,13 @@ function redoLevel6Practice() {
         `;
 
         // 重置导航栏状态
-        document.querySelectorAll('.practice-nav-item').forEach(item => {
-            item.classList.remove('active');
-        });
-        document.querySelector('.practice-nav-item[onclick*="choice"]').classList.add('active');
+        const navItems = document.querySelectorAll('#level5PracticePage .practice-nav-item');
+        navItems.forEach(item => item.classList.remove('active'));
+
+        const choiceNavItem = document.querySelector('#level5PracticePage .practice-nav-item[onclick*="choice"]');
+        if (choiceNavItem) {
+            choiceNavItem.classList.add('active');
+        }
     }
 }
 

@@ -224,11 +224,11 @@ function handleImageUpload1(input) {
     // 显示上传的图片
     const uploadedImages = document.getElementById('uploaded-images-1');
     uploadedImages.innerHTML = `
-    < div class="uploaded-image" >
+      <div class="uploaded-image">
         <img src="${imageData}" alt="上传的图片" style="max-width: 100%; height: auto;">
-            <button class="remove-image" onclick="removeImage(1)">×</button>
-        </div>
-`;
+        <button class="remove-image" onclick="removeImage(1)">×</button>
+      </div>
+    `;
   };
   reader.readAsDataURL(file);
 }
@@ -245,11 +245,11 @@ function handleImageUpload2(input) {
     // 显示上传的图片
     const uploadedImages = document.getElementById('uploaded-images-2');
     uploadedImages.innerHTML = `
-    < div class="uploaded-image" >
+      <div class="uploaded-image">
         <img src="${imageData}" alt="上传的图片" style="max-width: 100%; height: auto;">
-            <button class="remove-image" onclick="removeImage(2)">×</button>
-        </div>
-`;
+        <button class="remove-image" onclick="removeImage(2)">×</button>
+      </div>
+    `;
   };
   reader.readAsDataURL(file);
 }
@@ -738,6 +738,115 @@ function redoPractice() {
 
   // 重新加载实战演练内容
   loadPracticeContent();
+
+  // 重新加载实战演练页面的原始内容
+  const practiceContent = document.querySelector('#practicePage .practice-content');
+  if (practiceContent) {
+    // 重新加载原始的标签页结构
+    practiceContent.innerHTML = `
+      <!-- 选择题内容 -->
+      <div id="choice-content" class="practice-tab-content active">
+        <h3>选择题</h3>
+        <p>请完成以下选择题。</p>
+        <div class="practice-question">
+          <p><strong>问题1：</strong>（2021春•儋州校级月考）为测量一弹簧的劲度系数，某同学根据实验数据作出了该弹簧弹力与弹簧长度的关系图象如图所示，弹簧始终处于弹性限度内，则该弹簧的劲度系数为（　　）
+          </p>
+          <div class="question-image">
+            <img src="images/test/第一关/第一关选择1.png" alt="弹簧弹力与长度关系图"
+              style="max-width: 100%; height: auto; margin: 10px 0;">
+          </div>
+          <div class="practice-options">
+            <label><input type="radio" name="test-q1" value="a"> A．50N/m</label>
+            <label><input type="radio" name="test-q1" value="b"> B．200/3N/m</label>
+            <label><input type="radio" name="test-q1" value="c"> C．100N/m</label>
+            <label><input type="radio" name="test-q1" value="d"> D．200N/m</label>
+          </div>
+        </div>
+
+        <div class="practice-question">
+          <p><strong>问题2：</strong>（2020秋•克拉玛依区校级期末）有一圆形的均匀薄板，若将其中央再挖掉一个小圆板成一个圆环，如图所示，下面说法正确的是（　　）</p>
+          <div class="question-image">
+            <img src="images/test/第一关/第一关选择2.png" alt="圆环示意图"
+              style="max-width: 100%; height: auto; margin: 10px 0;">
+          </div>
+          <div class="practice-options">
+            <label><input type="radio" name="test-q2" value="a"> A．重心向外侧偏移，重力减小</label>
+            <label><input type="radio" name="test-q2" value="b"> B．重力和重心都没有变</label>
+            <label><input type="radio" name="test-q2" value="c"> C．重力减小，重心位置没有变</label>
+            <label><input type="radio" name="test-q2" value="d"> D．重力减小，重心位置不存在</label>
+          </div>
+        </div>
+
+        <div class="practice-question">
+          <p><strong>问题3：</strong>（2021・聊城二模）如图所示，劲度系数为 k 的轻弹簧一端系于墙上，另一端连接质量为 m 的物体 A，用相同质量的物体 B 推 A
+            使弹簧压缩，A、B 与水平面间的动摩擦因数分别为μ<sub>A</sub>和μ<sub>B</sub>且μ<sub>A</sub>
+            <μ<sub>B</sub>。将 A、B 由静止释放后，A、B 向右运动一段距离后分离，则 A、B 即将分离时（）
+          </p>
+          <div class="question-image">
+            <img src="images/test/第一关/第一关选择题3.png" alt="弹簧分离问题示意图"
+              style="max-width: 100%; height: auto; margin: 10px 0;">
+          </div>
+          <div class="practice-options">
+            <label><input type="radio" name="test-q3" value="a"> A. 弹簧形变量为零</label>
+            <label><input type="radio" name="test-q3" value="b"> B.
+              弹簧的压缩量为(μ<sub>B</sub>−μ<sub>A</sub>)mg/k</label>
+            <label><input type="radio" name="test-q3" value="c"> C.
+              弹簧的伸长量为(μ<sub>B</sub>−μ<sub>A</sub>)mg/k</label>
+            <label><input type="radio" name="test-q3" value="d"> D.
+              弹簧的压缩量为(μ<sub>A</sub>+μ<sub>B</sub>)mg/k</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 填空题内容 -->
+      <div id="fill-content" class="practice-tab-content" style="display: none;">
+        <h3>填空题</h3>
+        <p>请完成以下填空题。</p>
+        <div class="practice-question">
+          <p><strong>问题1：</strong>滑动摩擦力的大小公式为______，方向与物体______方向相反。</p>
+          <input type="text" class="practice-input" placeholder="请输入答案" id="fill-q1">
+        </div>
+
+        <div class="practice-question">
+          <p><strong>问题2：</strong>弹簧劲度系数k的单位是______，它反映了弹簧的______特性。</p>
+          <input type="text" class="practice-input" placeholder="请输入答案" id="fill-q2">
+        </div>
+
+        <div class="practice-question">
+          <p><strong>问题3：</strong>质量为5 kg的物体，在月球表面所受重力约为地球表面的1/6，则它在月球表面所受重力大小为______ N。（g地取10 m/s²）</p>
+          <input type="text" class="practice-input" placeholder="请输入答案" id="fill-q3">
+        </div>
+      </div>
+
+      <!-- 应用题内容 -->
+      <div id="application-content" class="practice-tab-content" style="display: none;">
+        <h3>应用题</h3>
+        <p>请完成以下应用题，上传解题过程图片。</p>
+        <div class="practice-question">
+          <p><strong>问题1：</strong>物体 A 质量为 4 kg，放在倾角为 30° 的斜面上，A 与斜面间的动摩擦因数为 0.5。用平行于斜面的力 F 向上拉 A，使 A
+            沿斜面匀速上升。求力 F 的大小。（g 取 10 m/s²）</p>
+          <img src="images/test/第一关/第一关应用题1.png" alt="斜面拉力示意图"
+            style="max-width: 40%; height: auto; margin: 10px 0;">
+          <div class="image-upload-container">
+            <div class="upload-area" id="upload-area-1"
+              onclick="document.getElementById('file-input-1').click()">
+              <div class="upload-icon">📷</div>
+              <div class="upload-text">点击或拖拽上传图片</div>
+              <div class="upload-hint">支持 JPG、PNG 格式</div>
+            </div>
+            <input type="file" id="file-input-1" class="file-input" accept="image/*"
+              onchange="handleImageUpload1(this)" style="display: none;">
+            <div class="uploaded-images" id="uploaded-images-1"></div>
+          </div>
+        </div>
+
+        <!-- 提交答案按钮 -->
+        <div class="practice-footer">
+          <button class="practice-submit" onclick="submitPractice()">提交答案</button>
+        </div>
+      </div>
+    `;
+  }
 }
 
 // 关闭实战演练结果

@@ -37,6 +37,68 @@ function startChapterTest() {
   // 显示章节测试页面
   document.getElementById('mainPage').style.display = 'none';
   document.getElementById('chapterTestPage').style.display = 'block';
+
+  // 检查是否存在已完成的测试
+  if (currentChapterTestAnswers) {
+    // 直接显示答题结果
+    const correctAnswers = {
+      choice: {
+        q1: 'd',  // 图丙中，踩在脚下且静止在水平草地上的足球可能受到3个力的作用
+        q2: 'a',  // 力的作用是相互的，一个物体是施力物体的同时也是受力物体
+        q3: 'a',  // 密度均匀的球体的重心在球心
+        q4: 'a',  // 力一定是物体对物体的相互作用
+        q5: 'b',  // kL
+        q6: 'd',  // 长度为12cm时，弹力大小为4N
+        q7: 'b',  // B
+        q8: 'a',  // fA＝8N fB＝3N
+        q9: 'a',  // 一个物体放在水平桌面上，物体受到了向上的弹力，是因为桌面发生了形变
+        q10: 'd', // 木板运动过程中，弹簧测力计示数等于木块受到的摩擦力
+        q11: 'b', // 蚂蚁受到的弹力逐渐变大
+        q12: 'd', // 地面对B的支持力大小等于A、B的总重力
+        q13: 'd', // 匀速运行时，有台阶自动扶梯中，乘客不受摩擦力
+        q14: 'c', // 撑杆起跳上升阶段，弯曲的撑杆对人的作用力大小等于人对撑杆的作用力大小
+        q15: 'b'  // 球拍对乒乓球的作用力与乒乓球对球拍的作用力大小相等
+      },
+      fill: {
+        q1: ['AB', 'B', 'A'],  // 操作必要的是AB；误差较大的是B；对提高实验精度最有利的是A
+        q2: ['F\'', '等效替代法', '1.50', 'ABC'],  // F'；等效替代法；1.50N；记录内容ABC
+        q3: ['A', 'F\'']  // 正确的是A；方向一定沿AO方向的是F'
+      }
+    };
+
+    showChapterTestResults(currentChapterTestAnswers.choiceAnswers, currentChapterTestAnswers.fillAnswers, currentChapterTestAnswers.appAnswers, correctAnswers);
+  } else {
+    // 加载章节测试内容
+    loadChapterTestContent();
+
+    // 确保导航栏的"选择"选项为激活状态
+    const navItems = document.querySelectorAll('#chapterTestPage .quiz-nav-item');
+    navItems.forEach(item => item.classList.remove('active'));
+
+    const choiceNavItem = document.querySelector('#chapterTestPage .quiz-nav-item[onclick*="choice"]');
+    if (choiceNavItem) {
+      choiceNavItem.classList.add('active');
+    }
+
+    // 确保显示选择题页面
+    const tabContents = document.querySelectorAll('#chapterTestPage .quiz-tab-content');
+    tabContents.forEach(content => {
+      content.classList.remove('active');
+      content.style.display = 'none';
+    });
+
+    const choiceContent = document.getElementById('chapter-test-choice-content');
+    if (choiceContent) {
+      choiceContent.classList.add('active');
+      choiceContent.style.display = 'block';
+    }
+
+    // 控制提交按钮的显示/隐藏，只有在应用题标签页时显示
+    const chapterFooter = document.querySelector('#chapterTestPage .quiz-footer');
+    if (chapterFooter) {
+      chapterFooter.style.display = 'none';
+    }
+  }
 }
 
 // 关闭章节测试前导说明页面
@@ -701,9 +763,9 @@ function submitChapterTest() {
       q15: 'b'  // 球拍对乒乓球的作用力与乒乓球对球拍的作用力大小相等
     },
     fill: {
-      q1: ['AB', 'B', 'C'],  // 操作必要的是AB；误差较大的是B；对提高实验精度最有利的是C
-      q2: ['F\'', '等效替代法', '3.6', 'O点位置、两弹簧秤读数、两细绳方向'],  // F'；等效替代法；3.6N；记录O点位置、两弹簧秤读数、两细绳方向
-      q3: ['AC', 'F\'']  // 正确的是AC；方向一定沿AO方向的是F'
+      q1: ['AB', 'B', 'A'],  // 操作必要的是AB；误差较大的是B；对提高实验精度最有利的是A
+      q2: ['F\'', '等效替代法', '1.50', 'ABC'],  // F'；等效替代法；1.50N；记录内容ABC
+      q3: ['A', 'F\'']  // 正确的是A；方向一定沿AO方向的是F'
     }
   };
 
@@ -764,6 +826,13 @@ function showChapterTestResults(choiceAnswers, fillAnswers, appAnswers, correctA
     } else {
       trackQuestionResult('level5', 'fill', 1, false);
     }
+    resultHTML += `
+      <div class="test-result-item ${isCorrect ? 'correct' : 'incorrect'}">
+        <p><strong>填空题1-${i + 1}：</strong>${isCorrect ? '✅ 正确' : '❌ 错误'}</p>
+        <p><strong>你的答案：</strong>${userAnswer || '未作答'}</p>
+        <p><strong>正确答案：</strong>${correctFill1[i]}</p>
+      </div>
+    `;
   }
 
   // 填空题2
@@ -778,6 +847,13 @@ function showChapterTestResults(choiceAnswers, fillAnswers, appAnswers, correctA
     } else {
       trackQuestionResult('level5', 'fill', 2, false);
     }
+    resultHTML += `
+      <div class="test-result-item ${isCorrect ? 'correct' : 'incorrect'}">
+        <p><strong>填空题2-${i + 1}：</strong>${isCorrect ? '✅ 正确' : '❌ 错误'}</p>
+        <p><strong>你的答案：</strong>${userAnswer || '未作答'}</p>
+        <p><strong>正确答案：</strong>${correctFill2[i]}</p>
+      </div>
+    `;
   }
 
   // 填空题3
