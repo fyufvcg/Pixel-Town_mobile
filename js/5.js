@@ -935,6 +935,11 @@ function updateLevel4TotalScore() {
     if (scoreDetailElement) {
         scoreDetailElement.innerHTML = `选择题+填空题：${choiceFillScore}分 | 应用题：${appScoreTotal}分`;
     }
+
+    // 解锁下一关
+    if (typeof unlockNextLevel === 'function') {
+        unlockNextLevel(5);
+    }
 }
 
 // 打开第四关实验视频
@@ -1301,8 +1306,12 @@ function handleLevel5ImageUpload(input) {
 
 // 提交第五关实战演练答案
 function submitLevel5Practice() {
-    // 这里可以添加提交逻辑
     alert('答案已提交！');
+
+    // 解锁下一关
+    if (typeof unlockNextLevel === 'function') {
+        unlockNextLevel(5);
+    }
 }
 
 // 力的平行四边形实验

@@ -349,6 +349,11 @@ function submitLevel3Practice() {
     if (practiceContent) {
         practiceContent.innerHTML = resultHTML;
     }
+
+    // 解锁下一关
+    if (typeof unlockNextLevel === 'function') {
+        unlockNextLevel(2);
+    }
 }
 
 

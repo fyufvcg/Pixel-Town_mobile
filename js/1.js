@@ -291,6 +291,11 @@ function submitPractice() {
     practiceContent.innerHTML = '';
     showPracticeResults(practiceAnswers);
   }
+
+  // 解锁下一关
+  if (typeof unlockNextLevel === 'function') {
+    unlockNextLevel(1);
+  }
 }
 
 // 存储当前实战演练答案
