@@ -293,6 +293,11 @@ function submitPractice() {
     practiceContent.innerHTML = '';
     showPracticeResults(practiceAnswers);
   }
+
+  // 解锁下一关
+  if (typeof unlockNextLevel === 'function') {
+    unlockNextLevel(1);
+  }
 }
 
 // 存储当前实战演练答案
@@ -872,7 +877,7 @@ function redoPractice() {
 
         <!-- 提交答案按钮 -->
         <div class="practice-footer">
-          <button class="practice-submit" onclick="submitPractice()">提交答案</button>
+          <button class="practice-submit" onclick="submitPractice();unlockNextLevel(1)">提交答案</button>
         </div>
       </div>
     `;

@@ -340,7 +340,7 @@ levelContent['notice-6'] = {
                 </div>
             </div>
             
-            <button class="test-submit" onclick="submitLevel5Test()">提交答案</button>
+            <button class="test-submit" onclick="submitLevel5Test();unlockNextLevel(5)">提交答案</button>
         </div>
     `,
     practice: {
@@ -426,7 +426,7 @@ levelContent['notice-6'] = {
                 </div>
             </div>
             
-            <button class="test-submit" onclick="submitLevel6Practice()">提交答案</button>
+            <button class="test-submit" onclick="submitLevel6Practice();unlockNextLevel(6)">提交答案</button>
         `,
     },
 };

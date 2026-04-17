@@ -1063,20 +1063,41 @@ function handleLogin(event) {
             console.log('loginSuccess:', loginSuccess);
             if (loginSuccess) {
                 console.log('登录成功，准备跳转');
+                const userId = data.user_id || localStorage.getItem('pixelTownUserId');
+                console.log('用户ID:', userId);
                 localStorage.setItem('pixelTownUsername', data.username || document.getElementById('loginUsername').value);
-                localStorage.setItem('pixelTownUserId', data.user_id || Date.now().toString());
+                if (userId) {
+                    localStorage.setItem('pixelTownUserId', userId);
+                }
                 console.log('关闭登录弹窗');
                 closeLoginModal();
                 console.log('调用 goToMainPageNoAnimation');
                 goToMainPageNoAnimation();
+                
+                // 从数据库加载成就数据
+                if (typeof checkAchievements === 'function') {
+                    checkAchievements();
+                }
+                // 更新我的页面的用户信息
+                if (typeof updateMinePageInfo === 'function') {
+                    updateMinePageInfo();
+                }
             } else {
                 console.log('登录失败:', data.message);
-                alert(data.message || '登录失败');
+                if (typeof Modal !== 'undefined' && typeof Modal.info === 'function') {
+                    Modal.info(data.message || '登录失败', '登录失败');
+                } else {
+                    alert(data.message || '登录失败');
+                }
             }
         })
         .catch(err => {
             console.error('登录错误:', err);
-            alert('登录失败，请稍后重试');
+            if (typeof Modal !== 'undefined' && typeof Modal.info === 'function') {
+                Modal.info('登录失败，请稍后重试', '登录失败');
+            } else {
+                alert('登录失败，请稍后重试');
+            }
         });
 }
 
@@ -1087,12 +1108,20 @@ function handleRegister(event) {
     const confirmPassword = document.getElementById('registerConfirmPassword').value;
 
     if (!validatePassword(password)) {
-        alert('密码复杂度不足，请确保密码至少6位，且包含数字和字母');
+        if (typeof Modal !== 'undefined' && typeof Modal.info === 'function') {
+            Modal.info('密码复杂度不足，请确保密码至少6位，且包含数字和字母', '提示');
+        } else {
+            alert('密码复杂度不足，请确保密码至少6位，且包含数字和字母');
+        }
         return;
     }
 
     if (password !== confirmPassword) {
-        alert('两次输入的密码不一致');
+        if (typeof Modal !== 'undefined' && typeof Modal.info === 'function') {
+            Modal.info('两次输入的密码不一致', '提示');
+        } else {
+            alert('两次输入的密码不一致');
+        }
         return;
     }
 
@@ -1108,18 +1137,36 @@ function handleRegister(event) {
     })
         .then(res => res.json())
         .then(data => {
-            if (data.success) {
-                localStorage.setItem('pixelTownUsername', data.username);
+            const registerSuccess = data.status === 'success' || data.success;
+            if (registerSuccess) {
+                localStorage.setItem('pixelTownUsername', username);
                 localStorage.setItem('pixelTownUserId', data.user_id);
                 closeRegisterModal();
                 goToMainPage();
+                
+                // 从数据库加载成就数据
+                if (typeof checkAchievements === 'function') {
+                    checkAchievements();
+                }
+                // 更新我的页面的用户信息
+                if (typeof updateMinePageInfo === 'function') {
+                    updateMinePageInfo();
+                }
             } else {
-                alert(data.message || '注册失败');
+                if (typeof Modal !== 'undefined' && typeof Modal.info === 'function') {
+                    Modal.info(data.message || '注册失败', '注册失败');
+                } else {
+                    alert(data.message || '注册失败');
+                }
             }
         })
         .catch(err => {
             console.error('注册错误:', err);
-            alert('注册失败，请稍后重试');
+            if (typeof Modal !== 'undefined' && typeof Modal.info === 'function') {
+                Modal.info('注册失败，请稍后重试', '注册失败');
+            } else {
+                alert('注册失败，请稍后重试');
+            }
         });
 }
 
@@ -1137,6 +1184,11 @@ function goToMainPageNoAnimation() {
     // 解锁初次造访成就
     if (typeof unlockAchievement === 'function') {
         unlockAchievement('first_visit');
+    }
+
+    // 初始化关卡解锁状态
+    if (typeof initLevelUnlock === 'function') {
+        initLevelUnlock();
     }
 
     showModal();
@@ -1160,6 +1212,16 @@ function goToMainPage() {
             // 解锁初次造访成就
             if (typeof unlockAchievement === 'function') {
                 unlockAchievement('first_visit');
+            }
+
+            // 初始化关卡解锁状态
+            if (typeof initLevelUnlock === 'function') {
+                initLevelUnlock();
+            }
+
+            // 更新我的页面的用户信息
+            if (typeof updateMinePageInfo === 'function') {
+                updateMinePageInfo();
             }
         },
         function () {
@@ -1846,7 +1908,11 @@ function showKnowledgeDetail(id, name) {
 
     const detail = knowledgeDetails[id];
     if (!detail) {
-        alert(`知识点：${name}\n\n知识点细分功能开发中...\n\n请稍后再试！`);
+        if (typeof Modal !== 'undefined' && typeof Modal.info === 'function') {
+            Modal.info('知识点细分功能开发中...\n\n请稍后再试！', '提示');
+        } else {
+            alert(`知识点：${name}\n\n知识点细分功能开发中...\n\n请稍后再试！`);
+        }
         return;
     }
 
@@ -2745,12 +2811,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // 解锁街道探险家成就
-    setTimeout(() => {
-        if (typeof unlockAchievement === 'function') {
-            unlockAchievement('street_explorer');
-        }
-    }, 5000); // 延迟5秒，确保用户有时间探索页面
 });
 
 
@@ -3363,6 +3423,11 @@ function submitLevel6Practice() {
         practiceContent.innerHTML = '';
         showLevel6PracticeResults(practiceAnswers);
     }
+
+    // 解锁下一关
+    if (typeof unlockNextLevel === 'function') {
+        unlockNextLevel(6);
+    }
 }
 
 // 存储当前第五关实战演练答案
@@ -3682,7 +3747,7 @@ function redoLevel6Practice() {
                 
                 <!-- 提交答案按钮 -->
                 <div class="practice-footer">
-                    <button class="practice-submit" onclick="submitLevel6Practice()">提交答案</button>
+                    <button class="practice-submit" onclick="submitLevel6Practice();unlockNextLevel(6)">提交答案</button>
                 </div>
             </div>
         `;

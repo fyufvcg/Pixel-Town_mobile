@@ -716,7 +716,7 @@
 
                     <!-- 提交答案按钮 -->
                     <div class="practice-footer">
-                        <button class="practice-submit" onclick="submitPractice()">提交答案</button>
+                        <button class="practice-submit" onclick="submitPractice();unlockNextLevel(1)">提交答案</button>
                     </div>
                 </div>
             </div>
@@ -832,7 +832,7 @@
 
                     <!-- 提交答案按钮 -->
                     <div class="practice-footer">
-                        <button class="practice-submit" onclick="submitLevel2Practice()">提交答案</button>
+                        <button class="practice-submit" onclick="submitLevel2Practice();unlockNextLevel(2)">提交答案</button>
                     </div>
                 </div>
             </div>
@@ -1711,7 +1711,7 @@
 
                     <!-- 提交答案按钮 -->
                     <div class="practice-footer">
-                        <button class="practice-submit" onclick="submitLevel3Practice()">提交答案</button>
+                        <button class="practice-submit" onclick="submitLevel3Practice();unlockNextLevel(3)">提交答案</button>
                     </div>
                 </div>
             </div>
@@ -2388,7 +2388,7 @@
 
                     <!-- 提交答案按钮 -->
                     <div class="practice-footer">
-                        <button class="practice-submit" onclick="submitLevel4Practice()">提交答案</button>
+                        <button class="practice-submit" onclick="submitLevel4Practice();unlockNextLevel(4)">提交答案</button>
                     </div>
                 </div>
             </div>
@@ -2925,7 +2925,7 @@
                             </div>
                         </div>
 
-                        <button class="test-submit" onclick="submitLevel5Test()">提交答案</button>
+                        <button class="test-submit" onclick="submitLevel5Test();unlockNextLevel(5)">提交答案</button>
                     </div>
                 </div>
             </div>
@@ -3044,7 +3044,7 @@
                     </div>
 
                     <div class="practice-footer">
-                        <button class="practice-submit" onclick="submitLevel6Practice()">提交答案</button>
+                        <button class="practice-submit" onclick="submitLevel6Practice();unlockNextLevel(6)">提交答案</button>
                     </div>
                 </div>
             </div>
@@ -3082,37 +3082,37 @@
                 <!-- 关卡容器 -->
                 <div class="levels-scroll-wrapper">
                     <!-- 第一关 -->
-                    <div class="level-item level-small level-left">
+                    <div class="level-item level-small level-left" id="level-item-1" onclick="handleLevelClick(1)">
                         <img src="images/level.png" alt="第一关" class="level-img">
                         <span class="level-text">第一关</span>
                     </div>
                     <!-- 第二关 -->
-                    <div class="level-item level-small level-right">
+                    <div class="level-item level-small level-right" id="level-item-2" onclick="handleLevelClick(2)">
                         <img src="images/level.png" alt="第二关" class="level-img">
                         <span class="level-text">第二关</span>
                     </div>
                     <!-- 第三关 -->
-                    <div class="level-item level-small level-left">
+                    <div class="level-item level-small level-left" id="level-item-3" onclick="handleLevelClick(3)">
                         <img src="images/level.png" alt="第三关" class="level-img">
                         <span class="level-text">第三关</span>
                     </div>
                     <!-- 第四关（小测） -->
-                    <div class="level-item level-large level-right" onclick="openQuizPage()">
+                    <div class="level-item level-large level-right" id="level-item-quiz" onclick="handleLevelClick('quiz')">
                         <img src="images/level1.png" alt="小测" class="level-img">
                         <span class="level-text">小测</span>
                     </div>
                     <!-- 第四关 -->
-                    <div class="level-item level-small level-left" onclick="showLevel4Page()">
+                    <div class="level-item level-small level-left" id="level-item-4" onclick="handleLevelClick(4)">
                         <img src="images/level.png" alt="第四关" class="level-img">
                         <span class="level-text">第四关</span>
                     </div>
                     <!-- 第五关 -->
-                    <div class="level-item level-small level-right" onclick="showLevel5Page()">
+                    <div class="level-item level-small level-right" id="level-item-5" onclick="handleLevelClick(5)">
                         <img src="images/level.png" alt="第五关" class="level-img">
                         <span class="level-text">第五关</span>
                     </div>
                     <!-- 第七关（章节测试） -->
-                    <div class="level-item level-large level-left" onclick="openChapterTestPage()">
+                    <div class="level-item level-large level-left" id="level-item-chapter-test" onclick="handleLevelClick('chapter-test')">
                         <img src="images/level1.png" alt="章节测试" class="level-img">
                         <span class="level-text">章节测试</span>
                     </div>

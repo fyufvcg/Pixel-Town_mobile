@@ -391,7 +391,6 @@ const categoryArticlesMap = {
     '交通工具': typeof vehicleArticles !== 'undefined' ? vehicleArticles : [],
     '生活用品': typeof dailyUseArticles !== 'undefined' ? dailyUseArticles : [],
     '生物自然': typeof bioNatureArticles !== 'undefined' ? bioNatureArticles : []
-
 };
 
 let fluidRandomArticles = [];
@@ -422,12 +421,21 @@ function calculateTagWeight(article) {
 }
 
 function getSmartArticles(category, limit = 5) {
+    // 流体力学直接使用fluidMechanicsArticles
+    if (category === '流体力学') {
+        if (typeof fluidMechanicsArticles !== 'undefined' && fluidMechanicsArticles.length > 0) {
+            // 随机打乱并取前5篇
+            const shuffled = [...fluidMechanicsArticles].sort(() => Math.random() - 0.5);
+            return shuffled.slice(0, limit).map((article, idx) => ({
+                ...article,
+                originalIndex: idx
+            }));
+        }
+        return [];
+    }
+    
     const articles = categoryArticlesMap[category];
     if (!articles || articles.length === 0) return [];
-
-    if (category === '流体力学') {
-        return fluidRandomArticles.slice(0, limit);
-    }
 
     const articlesWithWeight = articles.map((article, index) => ({
         article: article,
@@ -445,7 +453,7 @@ function getSmartArticles(category, limit = 5) {
 
 function showCategoryArticles(category) {
     const smartArticles = getSmartArticles(category, 5);
-    if (!smartArticles || smartArticles.length === 0) {  // ← 修改这里
+    if (!smartArticles || smartArticles.length === 0) {  
         alert('暂无该分类的文章');
         return;
     }
@@ -471,9 +479,21 @@ function showCategoryArticles(category) {
 }
 
 function showArticleDetail(articleIndex, category) {
-    const articles = categoryArticlesMap[category];
-    const article = articles[articleIndex];
-    if (!article) return;
+    // 流体力学直接使用fluidMechanicsArticles
+    let articles = categoryArticlesMap[category];
+    
+    // 如果是流体力学且当前map为空，尝试直接使用fluidMechanicsArticles
+    if (category === '流体力学' && (!articles || articles.length === 0)) {
+        if (typeof fluidMechanicsArticles !== 'undefined') {
+            articles = fluidMechanicsArticles;
+        }
+    }
+    
+    const article = articles ? articles[articleIndex] : null;
+    if (!article) {
+        alert('无法加载文章内容，请刷新页面后重试');
+        return;
+    }
 
     let articleHTML = `
         <div class="article-detail">

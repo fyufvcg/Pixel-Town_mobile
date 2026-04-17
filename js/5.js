@@ -945,6 +945,11 @@ function updateLevel4TotalScore() {
     if (scoreDetailElement) {
         scoreDetailElement.innerHTML = `选择题+填空题：${choiceFillScore}分 | 应用题：${appScoreTotal}分`;
     }
+
+    // 解锁下一关
+    if (typeof unlockNextLevel === 'function') {
+        unlockNextLevel(4);
+    }
 }
 
 // 打开第四关实验视频
@@ -1175,7 +1180,7 @@ function redoLevel4Practice() {
 
                 <!-- 提交答案按钮 -->
                 <div class="practice-footer">
-                    <button class="practice-submit" onclick="submitLevel4Practice()">提交答案</button>
+                    <button class="practice-submit" onclick="submitLevel4Practice();unlockNextLevel(4)">提交答案</button>
                 </div>
             </div>
         `;
@@ -1311,8 +1316,16 @@ function handleLevel5ImageUpload(input) {
 
 // 提交第五关实战演练答案
 function submitLevel5Practice() {
-    // 这里可以添加提交逻辑
-    alert('答案已提交！');
+    if (typeof Modal !== 'undefined' && typeof Modal.info === 'function') {
+        Modal.info('答案已提交！', '提示');
+    } else {
+        alert('答案已提交！');
+    }
+
+    // 解锁下一关
+    if (typeof unlockNextLevel === 'function') {
+        unlockNextLevel(5);
+    }
 }
 
 // 力的平行四边形实验

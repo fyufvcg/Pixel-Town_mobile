@@ -123,8 +123,8 @@ async function showAchievementPanel() {
     }
 
     // 重新计算成就统计数据
-    const totalAchievements = Object.keys(achievements).length;
-    const unlockedAchievements = Object.values(achievements).filter(ach => ach.unlocked).length;
+    const totalAchievements = Object.keys(window.achievements).length;
+    const unlockedAchievements = Object.values(window.achievements).filter(ach => ach.unlocked).length;
     const progressPercentage = Math.round((unlockedAchievements / totalAchievements) * 100);
 
     // 更新成就面板内容
@@ -147,7 +147,7 @@ async function showAchievementPanel() {
             <div class="achievement-progress-fill" style="width: ${progressPercentage}%"></div>
         </div>
         <div class="achievement-container">
-            ${Object.values(achievements).map(ach => `
+            ${Object.values(window.achievements).map(ach => `
                 <div class="achievement-item ${ach.unlocked ? 'unlocked' : 'locked'}" data-id="${ach.id}">
                     <div class="achievement-icon">${ach.icon}</div>
                     <div class="achievement-lock-overlay">🔒</div>
@@ -278,8 +278,8 @@ function updateAchievementStats() {
     const achievementPanel = document.getElementById('achievementPanel');
     if (!achievementPanel) return;
 
-    const totalAchievements = Object.keys(achievements).length;
-    const unlockedAchievements = Object.values(achievements).filter(ach => ach.unlocked).length;
+    const totalAchievements = Object.keys(window.achievements).length;
+    const unlockedAchievements = Object.values(window.achievements).filter(ach => ach.unlocked).length;
     const progressPercentage = Math.round((unlockedAchievements / totalAchievements) * 100);
 
     const statsContainer = achievementPanel.querySelector('.achievement-stats');
@@ -304,6 +304,7 @@ function updateAchievementStats() {
  * 保存进度到数据库
  */
 async function saveProgressToDatabase() {
+    console.log('========== saveProgressToDatabase 开始 ==========');
     const userId = localStorage.getItem('pixelTownUserId');
     console.log('【保存进度】调用 - userId:', userId);
 
@@ -312,13 +313,25 @@ async function saveProgressToDatabase() {
         return;
     }
 
-    // 获取成就数据
-    const achievementsData = JSON.stringify(window.achievements);
-    console.log('【保存进度】achievements:', achievementsData);
+    // 只保存已解锁的成就，避免覆盖数据库中的其他数据
+    const unlockedAchievements = {};
+    Object.keys(window.achievements).forEach(key => {
+        if (window.achievements[key].unlocked) {
+            unlockedAchievements[key] = true;
+        }
+    });
+    const achievementsData = JSON.stringify(unlockedAchievements);
+    console.log('【保存进度】window.achievements:', window.achievements);
+    console.log('【保存进度】已解锁成就:', unlockedAchievements);
+    console.log('【保存进度】JSON字符串:', achievementsData);
+
+    // 获取当前关卡进度，避免覆盖
+    const currentLevel = currentUserLevel || 1;
 
     const progressData = {
         user_id: userId,
-        achievements_data: achievementsData
+        achievements_data: achievementsData,
+        game_level: currentLevel
     };
 
     console.log('【保存进度】发送数据:', JSON.stringify(progressData));
@@ -334,7 +347,10 @@ async function saveProgressToDatabase() {
         console.log('【保存进度】结果:', result);
 
         // 保存成功后，也保存到 localStorage 作为备份
+        console.log('【保存进度】保存到 localStorage:', achievementsData);
         localStorage.setItem('savedAchievements', achievementsData);
+        console.log('【保存进度】已保存，验证:', localStorage.getItem('savedAchievements'));
+        console.log('========== saveProgressToDatabase 结束 ==========');
     } catch (e) {
         console.log('【保存进度】失败:', e);
     }
@@ -364,65 +380,39 @@ async function loadProgressFromDatabase() {
  * 从数据库加载进度并应用
  */
 async function loadProgressFromDatabaseAndApply() {
-    console.log('【加载进度】开始加载...');
-    const progress = await loadProgressFromDatabase();
-    console.log('【加载进度】从数据库获取的原始数据:', progress);
-
-    if (!progress) {
-        console.log('【加载进度】无法获取数据库进度');
-        // 尝试从localStorage加载备份
-        const savedAchievements = localStorage.getItem('savedAchievements');
-        if (savedAchievements) {
-            try {
-                const achievementsData = JSON.parse(savedAchievements);
-                if (achievementsData && typeof achievementsData === 'object') {
-                    Object.keys(achievementsData).forEach(key => {
-                        if (window.achievements[key]) {
-                            window.achievements[key].unlocked = achievementsData[key].unlocked || false;
-                        }
-                    });
-                    console.log('【加载进度】从localStorage加载成就数据');
-                }
-            } catch (e) {
-                console.log('解析localStorage成就数据失败:', e);
-            }
-        }
-        return;
-    }
-
-    // 加载成就数据
-    console.log('【加载进度】achievements_data:', progress.achievements_data);
-    if (progress.achievements_data) {
+    console.log('========== 开始加载成就 ==========');
+    console.log('userId:', localStorage.getItem('pixelTownUserId'));
+    console.log('加载前 unlocked 成就:', Object.keys(window.achievements).filter(k => window.achievements[k].unlocked));
+    
+    // 先尝试从 localStorage 备份加载
+    const savedAchievements = localStorage.getItem('savedAchievements');
+    console.log('localStorage savedAchievements:', savedAchievements);
+    
+    if (savedAchievements) {
         try {
-            let achievementsData = progress.achievements_data;
-            if (typeof achievementsData === 'string') {
-                achievementsData = achievementsData.trim();
-                if (achievementsData === '' || achievementsData === '{}' || achievementsData === 'null') {
-                    achievementsData = null;
-                } else {
-                    achievementsData = JSON.parse(achievementsData);
-                }
-            }
-            console.log('【加载进度】解析后的achievementsData:', achievementsData);
-
+            const achievementsData = JSON.parse(savedAchievements);
             if (achievementsData && typeof achievementsData === 'object' && Object.keys(achievementsData).length > 0) {
-                Object.keys(window.achievements).forEach(key => {
-                    window.achievements[key].unlocked = false;
-                });
+                console.log('从 localStorage 加载成就数据...');
+                
                 Object.keys(achievementsData).forEach(key => {
                     if (window.achievements[key]) {
-                        window.achievements[key].unlocked = achievementsData[key].unlocked || false;
+                        const dbValue = achievementsData[key];
+                        if (typeof dbValue === 'boolean') {
+                            window.achievements[key].unlocked = dbValue;
+                        } else if (typeof dbValue === 'object' && dbValue !== null) {
+                            window.achievements[key].unlocked = dbValue.unlocked || false;
+                        }
                     }
                 });
-                console.log('【加载进度】应用后的window.achievements:', window.achievements);
-
-                // 保存到localStorage作为备份
-                localStorage.setItem('savedAchievements', JSON.stringify(window.achievements));
+                console.log('加载后 unlocked 成就:', Object.keys(window.achievements).filter(k => window.achievements[k].unlocked));
+                console.log('========== 加载完成 ==========');
+                return;
             }
         } catch (e) {
-            console.log('解析成就数据失败:', e);
+            console.log('解析失败:', e);
         }
     }
+    console.log('========== 加载完成（无数据） ==========');
 }
 
 /**
@@ -455,11 +445,11 @@ async function checkAndUnlockAchievements() {
 
     try {
         const API_BASE_URL = 'http://47.98.245.103:5000';
-        const response = await fetch(`${API_BASE_URL}/get_user_data?user_id=${userId}`);
-        const data = await response.json();
+        const response = await fetch(`${API_BASE_URL}/get_progress?user_id=${userId}`);
+        const result = await response.json();
 
-        if (data.status === 'success' && data.data) {
-            const user = data.data;
+        if (result.status === 'success' && result.data) {
+            const user = result.data;
 
             // 检查并解锁关卡完成成就
             for (let i = 1; i <= 7; i++) {
@@ -485,6 +475,128 @@ async function checkAndUnlockAchievements() {
 
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', function () {
-    // 检查成就状态
-    checkAchievements();
+    // 检查是否有已登录用户
+    const userId = localStorage.getItem('pixelTownUserId');
+    if (userId && !isNaN(userId)) {
+        // 已登录用户，从数据库加载成就
+        checkAchievements();
+    } else {
+        console.log('【成就系统】游客访问，不加载成就数据');
+    }
 });
+
+// ========== 关卡解锁功能 ==========
+
+let currentUserLevel = 1;
+
+function initLevelUnlock() {
+    const userId = localStorage.getItem('pixelTownUserId');
+    if (!userId || isNaN(userId)) {
+        return;
+    }
+    
+    fetch(`${API_BASE_URL}/get_progress?user_id=${userId}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === 'success' && data.data) {
+                currentUserLevel = parseInt(data.data.game_level) || 1;
+                console.log('【关卡解锁】当前关卡:', currentUserLevel);
+                updateLevelDisplay();
+            }
+        })
+        .catch(err => console.log('【关卡解锁】加载失败:', err));
+}
+
+function updateLevelDisplay() {
+    const levelMap = {
+        1: ['level-item-1'],
+        2: ['level-item-1', 'level-item-2'],
+        3: ['level-item-1', 'level-item-2', 'level-item-3'],
+        4: ['level-item-1', 'level-item-2', 'level-item-3', 'level-item-quiz'],
+        5: ['level-item-1', 'level-item-2', 'level-item-3', 'level-item-quiz', 'level-item-4', 'level-item-5'],
+        6: ['level-item-1', 'level-item-2', 'level-item-3', 'level-item-quiz', 'level-item-4', 'level-item-5'],
+        7: ['level-item-1', 'level-item-2', 'level-item-3', 'level-item-quiz', 'level-item-4', 'level-item-5', 'level-item-chapter-test']
+    };
+    
+    const visibleLevels = levelMap[currentUserLevel] || ['level-item-1'];
+    
+    const allLevels = ['level-item-1', 'level-item-2', 'level-item-3', 'level-item-quiz', 'level-item-4', 'level-item-5', 'level-item-chapter-test'];
+    
+    allLevels.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.style.display = visibleLevels.includes(id) ? 'flex' : 'none';
+        }
+    });
+    
+    console.log('【关卡解锁】显示关卡:', visibleLevels);
+}
+
+function handleLevelClick(level) {
+    if (level === 'quiz') {
+        openQuizPage();
+    } else if (level === 'chapter-test') {
+        openChapterTestPage();
+    } else {
+        switch(level) {
+            case 1: showLevel1Page(); break;
+            case 2: showLevel2Page(); break;
+            case 3: showLevel3Page(); break;
+            case 4: showLevel4Page(); break;
+            case 5: showLevel5Page(); break;
+        }
+    }
+}
+
+async function unlockNextLevel(currentLevel) {
+    const nextLevel = currentLevel + 1;
+    if (nextLevel > 7) {
+        console.log('【关卡解锁】已解锁所有关卡');
+        return;
+    }
+    
+    const userId = localStorage.getItem('pixelTownUserId');
+    if (!userId || isNaN(userId)) {
+        console.log('【关卡解锁】未登录，无法解锁关卡');
+        if (typeof Modal !== 'undefined' && typeof Modal.info === 'function') {
+            Modal.info('请先登录后再解锁关卡', '提示');
+        } else {
+            if (typeof Modal !== 'undefined' && typeof Modal.info === 'function') {
+                Modal.info('请先登录后再解锁关卡', '提示');
+            } else {
+                alert('请先登录后再解锁关卡');
+            }
+        }
+        return;
+    }
+    
+    console.log('【关卡解锁】当前关卡:', currentLevel, '解锁下一关:', nextLevel);
+    
+    const API_BASE_URL = 'http://47.98.245.103:5000';
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}/update_progress`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                user_id: userId,
+                game_level: nextLevel
+            })
+        });
+        const result = await response.json();
+        console.log('【关卡解锁】保存结果:', result);
+        
+        if (result.status === 'success') {
+            currentUserLevel = nextLevel;
+            updateLevelDisplay();
+            console.log('【关卡解锁】已成功解锁第' + nextLevel + '关');
+            
+            // 显示游戏内弹窗提示
+            if (typeof Modal !== 'undefined' && typeof Modal.info === 'function') {
+                Modal.info(`恭喜你解锁了第${nextLevel}关！`, '关卡解锁');
+            }
+        }
+    } catch (err) {
+        console.log('【关卡解锁】保存失败:', err);
+    }
+}
