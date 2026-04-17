@@ -352,7 +352,7 @@ function submitLevel3Practice() {
 
     // 解锁下一关
     if (typeof unlockNextLevel === 'function') {
-        unlockNextLevel(2);
+        unlockNextLevel(3);
     }
 }
 
@@ -640,7 +640,7 @@ function redoLevel3Practice() {
 
                 <!-- 提交答案按钮 -->
                 <div class="practice-footer">
-                    <button class="practice-submit" onclick="submitLevel3Practice()">提交答案</button>
+                    <button class="practice-submit" onclick="submitLevel3Practice();unlockNextLevel(3)">提交答案</button>
                 </div>
             </div>
         `;

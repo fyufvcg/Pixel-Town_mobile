@@ -1108,12 +1108,20 @@ function handleRegister(event) {
     const confirmPassword = document.getElementById('registerConfirmPassword').value;
 
     if (!validatePassword(password)) {
-        alert('密码复杂度不足，请确保密码至少6位，且包含数字和字母');
+        if (typeof Modal !== 'undefined' && typeof Modal.info === 'function') {
+            Modal.info('密码复杂度不足，请确保密码至少6位，且包含数字和字母', '提示');
+        } else {
+            alert('密码复杂度不足，请确保密码至少6位，且包含数字和字母');
+        }
         return;
     }
 
     if (password !== confirmPassword) {
-        alert('两次输入的密码不一致');
+        if (typeof Modal !== 'undefined' && typeof Modal.info === 'function') {
+            Modal.info('两次输入的密码不一致', '提示');
+        } else {
+            alert('两次输入的密码不一致');
+        }
         return;
     }
 
@@ -1145,12 +1153,20 @@ function handleRegister(event) {
                     updateMinePageInfo();
                 }
             } else {
-                alert(data.message || '注册失败');
+                if (typeof Modal !== 'undefined' && typeof Modal.info === 'function') {
+                    Modal.info(data.message || '注册失败', '注册失败');
+                } else {
+                    alert(data.message || '注册失败');
+                }
             }
         })
         .catch(err => {
             console.error('注册错误:', err);
-            alert('注册失败，请稍后重试');
+            if (typeof Modal !== 'undefined' && typeof Modal.info === 'function') {
+                Modal.info('注册失败，请稍后重试', '注册失败');
+            } else {
+                alert('注册失败，请稍后重试');
+            }
         });
 }
 
@@ -1892,7 +1908,11 @@ function showKnowledgeDetail(id, name) {
 
     const detail = knowledgeDetails[id];
     if (!detail) {
-        alert(`知识点：${name}\n\n知识点细分功能开发中...\n\n请稍后再试！`);
+        if (typeof Modal !== 'undefined' && typeof Modal.info === 'function') {
+            Modal.info('知识点细分功能开发中...\n\n请稍后再试！', '提示');
+        } else {
+            alert(`知识点：${name}\n\n知识点细分功能开发中...\n\n请稍后再试！`);
+        }
         return;
     }
 
@@ -3727,7 +3747,7 @@ function redoLevel6Practice() {
                 
                 <!-- 提交答案按钮 -->
                 <div class="practice-footer">
-                    <button class="practice-submit" onclick="submitLevel6Practice()">提交答案</button>
+                    <button class="practice-submit" onclick="submitLevel6Practice();unlockNextLevel(6)">提交答案</button>
                 </div>
             </div>
         `;

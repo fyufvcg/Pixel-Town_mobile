@@ -332,7 +332,7 @@ function submitLevel2Practice() {
 
     // 解锁下一关
     if (typeof unlockNextLevel === 'function') {
-        unlockNextLevel(1);
+        unlockNextLevel(2);
     }
 }
 
@@ -622,7 +622,7 @@ function redoLevel2Practice() {
 
                 <!-- 提交答案按钮 -->
                 <div class="practice-footer">
-                    <button class="practice-submit" onclick="submitLevel2Practice()">提交答案</button>
+                    <button class="practice-submit" onclick="submitLevel2Practice();unlockNextLevel(2)">提交答案</button>
                 </div>
             </div>
         `;
@@ -646,7 +646,11 @@ function submitLevel2Test() {
 
     // 检查是否完成所有题目
     if (!q1Answer || !q2Answer || !q3Answer || !q4Answer1 || !q4Answer2 || !q5Answer) {
-        alert('请完成所有题目后再提交！');
+        if (typeof Modal !== 'undefined' && typeof Modal.info === 'function') {
+            Modal.info('请完成所有题目后再提交！', '提示');
+        } else {
+            alert('请完成所有题目后再提交！');
+        }
         return;
     }
 

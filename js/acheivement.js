@@ -513,7 +513,7 @@ function updateLevelDisplay() {
         2: ['level-item-1', 'level-item-2'],
         3: ['level-item-1', 'level-item-2', 'level-item-3'],
         4: ['level-item-1', 'level-item-2', 'level-item-3', 'level-item-quiz'],
-        5: ['level-item-1', 'level-item-2', 'level-item-3', 'level-item-quiz', 'level-item-4'],
+        5: ['level-item-1', 'level-item-2', 'level-item-3', 'level-item-quiz', 'level-item-4', 'level-item-5'],
         6: ['level-item-1', 'level-item-2', 'level-item-3', 'level-item-quiz', 'level-item-4', 'level-item-5'],
         7: ['level-item-1', 'level-item-2', 'level-item-3', 'level-item-quiz', 'level-item-4', 'level-item-5', 'level-item-chapter-test']
     };
@@ -561,12 +561,18 @@ async function unlockNextLevel(currentLevel) {
         if (typeof Modal !== 'undefined' && typeof Modal.info === 'function') {
             Modal.info('请先登录后再解锁关卡', '提示');
         } else {
-            alert('请先登录后再解锁关卡');
+            if (typeof Modal !== 'undefined' && typeof Modal.info === 'function') {
+                Modal.info('请先登录后再解锁关卡', '提示');
+            } else {
+                alert('请先登录后再解锁关卡');
+            }
         }
         return;
     }
     
     console.log('【关卡解锁】当前关卡:', currentLevel, '解锁下一关:', nextLevel);
+    
+    const API_BASE_URL = 'http://47.98.245.103:5000';
     
     try {
         const response = await fetch(`${API_BASE_URL}/update_progress`, {

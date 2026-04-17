@@ -847,7 +847,7 @@ function redoPractice() {
 
         <!-- 提交答案按钮 -->
         <div class="practice-footer">
-          <button class="practice-submit" onclick="submitPractice()">提交答案</button>
+          <button class="practice-submit" onclick="submitPractice();unlockNextLevel(1)">提交答案</button>
         </div>
       </div>
     `;
